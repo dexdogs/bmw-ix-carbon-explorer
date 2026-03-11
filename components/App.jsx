@@ -518,12 +518,7 @@ export default function App() {
       <QualityLegend />
       <div style={{ position:"absolute", top:82, right:selectedZone?412:18, zIndex:30 }}>
         <button onClick={()=>setShowInfo(v=>!v)} style={{ width:36, height:36, borderRadius:8, border:`1px solid ${showInfo?"#00ff88":"#1a2a3c"}`, background:showInfo?"rgba(0,255,136,0.1)":"rgba(8,12,21,0.9)", color:showInfo?"#00ff88":"#556677", cursor:"pointer", fontSize:16 }} title="Dataset info & glossary">ⓘ</button>
-      
-        href="/BMW_iX_PCR_PCF_Dataset_Phase1.xlsx"
-        download="BMW_iX_PCR_PCF_Dataset_Phase1.xlsx"
-        style={{ width:36, height:36, borderRadius:8, border:"1px solid #1a2a3c", background:"rgba(8,12,21,0.9)", color:"#556677", cursor:"pointer", fontSize:9, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", textDecoration:"none", fontFamily:"'Space Grotesk',sans-serif", letterSpacing:"0.02em" }}
-        title="Export dataset"
-      >{"CSV↓"}</a>
+      <a href="/BMW_iX_PCR_PCF_Dataset_Phase1.xlsx" download="BMW_iX_PCR_PCF_Dataset_Phase1.xlsx" style={{ width:36, height:36, borderRadius:8, border:"1px solid #1a2a3c", background:"rgba(8,12,21,0.9)", color:"#556677", cursor:"pointer", fontSize:9, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", textDecoration:"none", fontFamily:"'Space Grotesk',sans-serif" }} title="Export dataset">Export</a>
       </div>
       {showInfo&&<InfoPanel selectedZone={selectedZone} />}
     </div>
