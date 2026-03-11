@@ -300,7 +300,7 @@ function Header() {
   return (
     <div style={{ position:"absolute", top:0, left:0, right:0, height:72, zIndex:20, background:"rgba(8,12,21,0.95)", borderBottom:"1px solid #1a2a3c", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 24px", fontFamily:"'Space Grotesk', sans-serif" }}>
       <div>
-        <div style={{ fontSize:16, fontWeight:700, color:"#e0e6ed", letterSpacing:0.5 }}>BMW iX xDrive45 — Carbon Data Layer</div>
+        <div style={{ fontSize:16, fontWeight:700, color:"#e0e6ed", letterSpacing:0.5 }}>Car's Carbon Complexities // dexdogs</div>
         <div style={{ fontSize:10, color:"#556677", marginTop:2 }}>Source: BMW Vehicle Footprint Report · TÜV Rheinland verified · ISO 14040/44</div>
       </div>
       <div style={{ display:"flex", gap:24, alignItems:"center" }}>
