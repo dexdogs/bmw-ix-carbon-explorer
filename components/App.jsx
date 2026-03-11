@@ -132,7 +132,7 @@ const GLOSSARY = [
 ];
 
 const INFO_SECTIONS = [
-  { title: "What is this dataset?", content: "This is a Phase 1 carbon data layer for the BMW iX xDrive45 — an electric SUV with a TUV-verified lifecycle footprint of 32.9 tonnes CO₂ equivalent on the EU electricity grid. The dataset maps ~80 Product Category Rules (PCRs) to 15 vehicle zones, estimates ~3,000 individual Product Carbon Footprints (PCFs), and anchors everything to BMW's own published Vehicle Footprint Report (March 2026), verified to ISO 14040/44." },
+  { title: "What is this dataset?", content: "This is a Phase 1 carbon data layer for the BMW iX xDrive45 — an electric SUV with a TUV-verified lifecycle footprint of 32.9 tonnes CO₂ equivalent on the EU electricity grid. The dataset maps ~80 Product Category Rules (PCRs) to 15 vehicle zones, estimates ~3,000 individual Product Carbon Footprints (PCFs), and anchors everything to BMW's own published Vehicle Footprint Report, verified to ISO 14040/44." },
   { title: "Why does the Catena-X data point matter?", content: "In 2024, BMW and Covestro demonstrated a complete, verified Product Carbon Footprint (PCF) for the iX kidney grille using the Catena-X automotive data network — real emissions data flowing from material supplier to BMW's Landshut plant, verified by Siemens-certified tooling. That is 1 component out of ~30,000 parts. 1 verified carbon footprint out of ~3,000 estimated ones. The kidney grille glows green because it is the single data point that proves the gap." },
   { title: "What does the data quality breakdown mean?", content: "Each zone is rated by how its carbon estimate was derived. Primary (Catena-X) means facility-level, cryptographically verified data — the gold standard. Supplier Environmental Product Declaration (EPD) means a third-party-verified declaration from a named supplier. Industry Average means published sectoral averages. Generic Life Cycle Inventory (LCI) means database proxies from ecoinvent or GaBi. Estimate means engineering judgement with no supplier data. The battery pack — the largest carbon contributor at ~22% of supply chain emissions — sits at Generic LCI / Estimate." },
   { title: "Why does this matter for carbon markets?", content: "Carbon credits and corporate net-zero claims are only as credible as the underlying measurement data. The iX is arguably the most data-intensive consumer product on the planet — yet 90% of its supply chain carbon is still estimated from industry averages. If a BMW iX has this problem, every industrial facility, every traded product, and every carbon credit has the same problem. The solution is not better software — it is better measurement infrastructure at the source. That is what the Carbon Computer (dexdogs) is building." },
@@ -181,6 +181,98 @@ function DataPanel({ zone, onClose }) {
   );
 }
 
+
+function FeedbackButton() {
+  const [open, setOpen] = React.useState(false);
+  const [type, setType] = React.useState("general");
+  const [name, setName] = React.useState("");
+  const [message, setMessage] = React.useState("");
+
+  const handleSend = () => {
+    const subject = encodeURIComponent(`[BMW iX Carbon Explorer] ${type.charAt(0).toUpperCase()+type.slice(1)} Feedback`);
+    const body = encodeURIComponent(`Name: ${name||"Anonymous"}\nType: ${type}\n\n${message}`);
+    window.open(`mailto:ankur@dexdogs.earth?subject=${subject}&body=${body}`);
+    setOpen(false);
+    setName(""); setMessage(""); setType("general");
+  };
+
+  const inputStyle = {
+    width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid #1a2a3c",
+    borderRadius:6, padding:"7px 10px", color:"#ccd6e0", fontSize:11,
+    fontFamily:"'Space Grotesk',sans-serif", outline:"none", boxSizing:"border-box",
+  };
+
+  return (
+    <>
+      <button onClick={()=>setOpen(v=>!v)} style={{ width:36, height:36, borderRadius:8, border:`1px solid ${open?"#4a9eff":"#1a2a3c"}`, background:open?"rgba(74,158,255,0.1)":"rgba(8,12,21,0.9)", color:open?"#4a9eff":"#556677", cursor:"pointer", fontSize:13 }} title="Feedback">✉</button>
+
+      {open && (
+        <div style={{
+          position:"fixed", top:0, left:0, right:0, bottom:0,
+          background:"rgba(0,0,0,0.6)", zIndex:1000,
+          display:"flex", alignItems:"center", justifyContent:"center",
+        }} onClick={()=>setOpen(false)}>
+          <div onClick={e=>e.stopPropagation()} style={{
+            width:340, background:"rgba(8,12,21,0.98)", border:"1px solid #1a2a3c",
+            borderRadius:12, padding:24, fontFamily:"'Space Grotesk',sans-serif",
+            boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
+          }}>
+            {/* Header */}
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
+              <div>
+                <div style={{ fontSize:14, fontWeight:700, color:"#ccd6e0" }}>Info & Feedback</div>
+                <div style={{ fontSize:10, color:"#445566", marginTop:2 }}>BMW iX Carbon Data Layer · dexdogs</div>
+              </div>
+              <button onClick={()=>setOpen(false)} style={{ background:"none", border:"none", color:"#445566", cursor:"pointer", fontSize:18, lineHeight:1 }}>✕</button>
+            </div>
+
+            {/* dexdogs link */}
+            <div style={{ background:"rgba(74,158,255,0.06)", border:"1px solid #1a2a3c", borderRadius:8, padding:"12px 14px", marginBottom:16 }}>
+              <div style={{ fontSize:11, color:"#4a9eff", fontWeight:600, marginBottom:4 }}>dexdogs.earth</div>
+              <div style={{ fontSize:10, color:"#556677", marginBottom:10 }}>Environmental data infrastructure for carbon markets and industrial decarbonization.</div>
+              <a href="https://dexdogs.earth" target="_blank" rel="noreferrer" style={{ fontSize:10, color:"#4a9eff", textDecoration:"none", fontWeight:600 }}>Visit site →</a>
+            </div>
+
+            {/* Feedback form */}
+            <div style={{ fontSize:11, fontWeight:600, color:"#778899", marginBottom:12 }}>Send Feedback</div>
+
+            <div style={{ marginBottom:10 }}>
+              <div style={{ fontSize:10, color:"#445566", marginBottom:4 }}>Name (optional)</div>
+              <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={inputStyle} />
+            </div>
+
+            <div style={{ marginBottom:10 }}>
+              <div style={{ fontSize:10, color:"#445566", marginBottom:6 }}>Type</div>
+              <div style={{ display:"flex", gap:6 }}>
+                {["general","bug","data","feature"].map(t => (
+                  <button key={t} onClick={()=>setType(t)} style={{
+                    flex:1, padding:"5px 0", borderRadius:6, cursor:"pointer", fontSize:9, fontWeight:600,
+                    border:`1px solid ${type===t?"#4a9eff":"#1a2a3c"}`,
+                    background: type===t?"rgba(74,158,255,0.15)":"transparent",
+                    color: type===t?"#4a9eff":"#445566",
+                  }}>{t}</button>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ marginBottom:16 }}>
+              <div style={{ fontSize:10, color:"#445566", marginBottom:4 }}>Message</div>
+              <textarea value={message} onChange={e=>setMessage(e.target.value)} placeholder="Your feedback..." rows={4} style={{...inputStyle, resize:"vertical"}} />
+            </div>
+
+            <button onClick={handleSend} disabled={!message.trim()} style={{
+              width:"100%", padding:"9px 0", borderRadius:8, cursor:message.trim()?"pointer":"not-allowed",
+              border:"1px solid #1a3a5c", background:message.trim()?"rgba(74,158,255,0.15)":"transparent",
+              color:message.trim()?"#4a9eff":"#334455", fontSize:11, fontWeight:600,
+              fontFamily:"'Space Grotesk',sans-serif",
+            }}>Send via Email — ankur@dexdogs.earth</button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 function ZoneList({ selectedZone, onZoneClick }) {
   const sorted = [...ZONES].sort((a,b)=>b.co2e_kg-a.co2e_kg);
   return (
@@ -209,12 +301,13 @@ function Header() {
     <div style={{ position:"absolute", top:0, left:0, right:0, height:72, zIndex:20, background:"rgba(8,12,21,0.95)", borderBottom:"1px solid #1a2a3c", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 24px", fontFamily:"'Space Grotesk', sans-serif" }}>
       <div>
         <div style={{ fontSize:16, fontWeight:700, color:"#e0e6ed", letterSpacing:0.5 }}>BMW iX xDrive45 — Carbon Data Layer</div>
-        <div style={{ fontSize:10, color:"#556677", marginTop:2 }}>Source: BMW Vehicle Footprint Report (March 2026) · TÜV Rheinland verified · ISO 14040/44</div>
+        <div style={{ fontSize:10, color:"#556677", marginTop:2 }}>Source: BMW Vehicle Footprint Report · TÜV Rheinland verified · ISO 14040/44</div>
       </div>
       <div style={{ display:"flex", gap:24, alignItems:"center" }}>
         {[
+          ["~30,000","Total Parts"],
           [VEHICLE_DATA.total_pcrs,"Product Category Rules (PCRs)"],
-          [VEHICLE_DATA.total_pcfs_est.toLocaleString(),"Product Carbon Footprints (PCFs)"],
+          [`~${VEHICLE_DATA.total_pcfs_est.toLocaleString()}`,"~3,000 Product Carbon Footprints (PCFs)"],
           [`${VEHICLE_DATA.supply_chain_co2e_t}t`,"CO₂ equivalent, cradle-to-gate"],
         ].map(([val,label],i)=>(
           <div key={i} style={{ textAlign:"center", maxWidth:130 }}>
@@ -498,7 +591,7 @@ function InfoPanel({ selectedZone }) {
         ))}
       </div>
       <div style={{ marginTop:16, padding:"10px 12px", borderRadius:8, background:"rgba(0,255,136,0.04)", border:"1px solid #00ff8822" }}>
-        <div style={{ fontSize:10, color:"#00ff88aa", lineHeight:1.6 }}>Built by dexdogs · BMW Vehicle Footprint Report (March 2026) · TÜV Rheinland verified · ISO 14040/44 · Catena-X Product Carbon Footprint Rulebook v2.0</div>
+        <div style={{ fontSize:10, color:"#00ff88aa", lineHeight:1.6 }}>Built by dexdogs · BMW Vehicle Footprint Report · TÜV Rheinland verified · ISO 14040/44 · Catena-X Product Carbon Footprint Rulebook v2.0</div>
       </div>
     </div>
   );
@@ -519,6 +612,7 @@ export default function App() {
       <div style={{ position:"absolute", top:82, right:selectedZone?412:18, zIndex:30 }}>
         <button onClick={()=>setShowInfo(v=>!v)} style={{ width:36, height:36, borderRadius:8, border:`1px solid ${showInfo?"#00ff88":"#1a2a3c"}`, background:showInfo?"rgba(0,255,136,0.1)":"rgba(8,12,21,0.9)", color:showInfo?"#00ff88":"#556677", cursor:"pointer", fontSize:16 }} title="Dataset info & glossary">ⓘ</button>
       <a href="/BMW_iX_PCR_PCF_Dataset_Phase1.xlsx" download="BMW_iX_PCR_PCF_Dataset_Phase1.xlsx" style={{ width:36, height:36, borderRadius:8, border:"1px solid #1a2a3c", background:"rgba(8,12,21,0.9)", color:"#556677", cursor:"pointer", fontSize:9, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", textDecoration:"none", fontFamily:"'Space Grotesk',sans-serif" }} title="Export dataset">Export</a>
+      <FeedbackButton />
       </div>
       {showInfo&&<InfoPanel selectedZone={selectedZone} />}
     </div>
