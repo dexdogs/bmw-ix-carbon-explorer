@@ -251,105 +251,97 @@ function CarView({ onZoneClick, selectedZone }) {
   const [view, setView] = useState("front");
 
   const VIEWS = [
-    { id:"front", label:"Front",  src:"/images/bmw-ix-front.jpg" },
-    { id:"right", label:"Right",  src:"/images/bmw-ix-right.jpg" },
-    { id:"back",  label:"Back",   src:"/images/bmw-ix-back.jpg"  },
-    { id:"left",  label:"Left",   src:"/images/bmw-ix-left.jpg"  },
-    { id:"top",   label:"Top",    src:"/images/bmw-ix-top.jpg"   },
+    { id:"front", label:"Front", src:"/images/bmw-ix-front.jpg" },
+    { id:"right", label:"Right", src:"/images/bmw-ix-right.jpg" },
+    { id:"back",  label:"Back",  src:"/images/bmw-ix-back.jpg"  },
+    { id:"left",  label:"Left",  src:"/images/bmw-ix-left.jpg"  },
+    { id:"top",   label:"Top",   src:"/images/bmw-ix-top.jpg"   },
   ];
 
-  // Dot positions per view — as percent of image width/height
-  // Adjust these once you see the real photos
   const DOT_POSITIONS = {
     front: {
-      kidney_grille: { x:52, y:52 },
-      front_motor:   { x:50, y:62 },
-      body:          { x:35, y:55 },
-      glazing:       { x:50, y:38 },
-      cfrp_roof:     { x:50, y:28 },
-      safety:        { x:38, y:48 },
-      electronics:   { x:55, y:42 },
-      wheels:        { x:22, y:72 },
-      brakes:        { x:23, y:68 },
-      suspension:    { x:24, y:64 },
-      charging:      { x:62, y:58 },
-      interior:      { x:48, y:44 },
-      thermal:       { x:58, y:55 },
-      polymers_misc: { x:42, y:60 },
-      battery:       { x:50, y:70 },
-      rear_motor:    { x:50, y:62 },
-    },
-    right: {
-      kidney_grille: { x:88, y:52 },
-      front_motor:   { x:82, y:60 },
-      rear_motor:    { x:18, y:60 },
-      body:          { x:50, y:55 },
-      glazing:       { x:50, y:36 },
-      cfrp_roof:     { x:45, y:26 },
-      safety:        { x:42, y:46 },
-      electronics:   { x:55, y:44 },
-      wheels:        { x:78, y:74 },
-      brakes:        { x:77, y:70 },
-      suspension:    { x:76, y:66 },
-      charging:      { x:14, y:54 },
-      interior:      { x:48, y:44 },
-      thermal:       { x:70, y:56 },
-      polymers_misc: { x:35, y:58 },
-      battery:       { x:50, y:72 },
+      kidney_grille:  {x:50, y:58},
+      front_motor:    {x:50, y:68},
+      battery:        {x:50, y:78},
+      body:           {x:22, y:55},
+      glazing:        {x:50, y:37},
+      cfrp_roof:      {x:50, y:28},
+      electronics:    {x:28, y:52},
+      safety:         {x:25, y:60},
+      wheels:         {x:20, y:75},
+      brakes:         {x:21, y:73},
+      suspension:     {x:20, y:70},
+      thermal:        {x:32, y:68},
+      polymers_misc:  {x:50, y:74},
+      interior:       {x:50, y:43},
     },
     back: {
-      kidney_grille: { x:50, y:52 },
-      rear_motor:    { x:50, y:62 },
-      body:          { x:65, y:55 },
-      glazing:       { x:50, y:38 },
-      cfrp_roof:     { x:50, y:28 },
-      safety:        { x:62, y:48 },
-      electronics:   { x:45, y:42 },
-      wheels:        { x:78, y:72 },
-      brakes:        { x:77, y:68 },
-      suspension:    { x:76, y:64 },
-      charging:      { x:38, y:58 },
-      interior:      { x:52, y:44 },
-      thermal:       { x:42, y:55 },
-      polymers_misc: { x:58, y:60 },
-      battery:       { x:50, y:70 },
-      front_motor:   { x:50, y:62 },
+      rear_motor:     {x:50, y:68},
+      battery:        {x:50, y:78},
+      body:           {x:72, y:55},
+      glazing:        {x:50, y:42},
+      cfrp_roof:      {x:50, y:30},
+      electronics:    {x:28, y:52},
+      safety:         {x:38, y:65},
+      wheels:         {x:22, y:76},
+      brakes:         {x:23, y:74},
+      suspension:     {x:22, y:71},
+      polymers_misc:  {x:50, y:73},
+      interior:       {x:50, y:47},
+      thermal:        {x:62, y:68},
     },
     left: {
-      kidney_grille: { x:12, y:52 },
-      front_motor:   { x:18, y:60 },
-      rear_motor:    { x:82, y:60 },
-      body:          { x:50, y:55 },
-      glazing:       { x:50, y:36 },
-      cfrp_roof:     { x:55, y:26 },
-      safety:        { x:58, y:46 },
-      electronics:   { x:45, y:44 },
-      wheels:        { x:22, y:74 },
-      brakes:        { x:23, y:70 },
-      suspension:    { x:24, y:66 },
-      charging:      { x:86, y:54 },
-      interior:      { x:52, y:44 },
-      thermal:       { x:30, y:56 },
-      polymers_misc: { x:65, y:58 },
-      battery:       { x:50, y:72 },
+      front_motor:    {x:82, y:62},
+      rear_motor:     {x:18, y:62},
+      battery:        {x:50, y:72},
+      body:           {x:50, y:52},
+      glazing:        {x:48, y:36},
+      cfrp_roof:      {x:45, y:24},
+      electronics:    {x:14, y:52},
+      safety:         {x:48, y:44},
+      charging:       {x:22, y:58},
+      wheels:         {x:78, y:72},
+      brakes:         {x:78, y:68},
+      suspension:     {x:76, y:65},
+      interior:       {x:46, y:42},
+      thermal:        {x:85, y:60},
+      polymers_misc:  {x:50, y:65},
+    },
+    right: {
+      kidney_grille:  {x:14, y:58},
+      front_motor:    {x:18, y:62},
+      rear_motor:     {x:82, y:62},
+      battery:        {x:50, y:72},
+      body:           {x:50, y:52},
+      glazing:        {x:50, y:36},
+      cfrp_roof:      {x:50, y:24},
+      electronics:    {x:12, y:52},
+      safety:         {x:48, y:44},
+      charging:       {x:78, y:58},
+      wheels:         {x:22, y:72},
+      brakes:         {x:22, y:68},
+      suspension:     {x:24, y:65},
+      interior:       {x:50, y:42},
+      thermal:        {x:15, y:60},
+      polymers_misc:  {x:50, y:65},
     },
     top: {
-      kidney_grille: { x:50, y:18 },
-      front_motor:   { x:50, y:22 },
-      rear_motor:    { x:50, y:78 },
-      body:          { x:50, y:50 },
-      glazing:       { x:50, y:45 },
-      cfrp_roof:     { x:50, y:42 },
-      safety:        { x:38, y:48 },
-      electronics:   { x:60, y:46 },
-      wheels:        { x:28, y:22 },
-      brakes:        { x:29, y:23 },
-      suspension:    { x:30, y:25 },
-      charging:      { x:50, y:82 },
-      interior:      { x:50, y:52 },
-      thermal:       { x:62, y:35 },
-      polymers_misc: { x:38, y:60 },
-      battery:       { x:50, y:55 },
+      cfrp_roof:      {x:50, y:44},
+      glazing:        {x:50, y:50},
+      interior:       {x:50, y:52},
+      body:           {x:28, y:50},
+      kidney_grille:  {x:50, y:20},
+      front_motor:    {x:50, y:24},
+      rear_motor:     {x:50, y:76},
+      battery:        {x:50, y:55},
+      wheels:         {x:25, y:26},
+      brakes:         {x:26, y:27},
+      suspension:     {x:27, y:30},
+      electronics:    {x:28, y:22},
+      charging:       {x:72, y:78},
+      thermal:        {x:50, y:28},
+      safety:         {x:30, y:48},
+      polymers_misc:  {x:50, y:17},
     },
   };
 
@@ -358,47 +350,42 @@ function CarView({ onZoneClick, selectedZone }) {
   return (
     <div style={{
       position:"absolute", left:290, right:selectedZone?410:16, top:80, bottom:50,
-      display:"flex", flexDirection:"column",
+      display:"flex", flexDirection:"column", background:"#000",
     }}>
 
       {/* View switcher */}
       <div style={{
-        display:"flex", gap:6, padding:"8px 0 8px 0",
+        display:"flex", gap:6, padding:"8px 12px",
         justifyContent:"center", flexShrink:0,
+        background:"#000",
       }}>
         {VIEWS.map(v => (
           <button key={v.id} onClick={()=>setView(v.id)} style={{
-            padding:"4px 14px", borderRadius:6, cursor:"pointer",
+            padding:"4px 16px", borderRadius:6, cursor:"pointer",
             fontFamily:"'Space Grotesk',sans-serif", fontSize:11, fontWeight:600,
             border:`1px solid ${view===v.id?"#4a9eff":"#1a2a3c"}`,
-            background: view===v.id?"rgba(74,158,255,0.15)":"rgba(8,12,21,0.8)",
-            color: view===v.id?"#4a9eff":"#556677",
+            background: view===v.id?"rgba(74,158,255,0.15)":"transparent",
+            color: view===v.id?"#4a9eff":"#445566",
             transition:"all 0.15s",
           }}>{v.label}</button>
         ))}
       </div>
 
       {/* Photo + dot overlay */}
-      <div style={{ position:"relative", flex:1, borderRadius:8, overflow:"hidden" }}>
+      <div style={{ position:"relative", flex:1, overflow:"hidden", background:"#000" }}>
 
-        {/* Photo */}
         <img
+          key={view}
           src={VIEWS.find(v=>v.id===view).src}
-          alt={`BMW iX ${view} view`}
+          alt={`BMW iX ${view}`}
           style={{
-            width:"100%", height:"100%", objectFit:"cover",
-            display:"block", borderRadius:8,
+            width:"100%", height:"100%",
+            objectFit:"contain",
+            display:"block",
           }}
         />
 
-        {/* Dark overlay to make dots pop */}
-        <div style={{
-          position:"absolute", inset:0, borderRadius:8,
-          background:"rgba(0,0,0,0.35)",
-          pointerEvents:"none",
-        }} />
-
-        {/* Zone dots */}
+        {/* Zone dots — positioned as % of container */}
         {ZONES.map(zone => {
           const pos = currentDots[zone.id];
           if (!pos) return null;
@@ -419,17 +406,31 @@ function CarView({ onZoneClick, selectedZone }) {
                 zIndex: isActive ? 20 : 10,
               }}
             >
+              {/* Outer pulse ring for Catena-X */}
+              {isCatena && (
+                <div style={{
+                  position:"absolute",
+                  top:"50%", left:"50%",
+                  transform:"translate(-50%,-50%)",
+                  width:24, height:24,
+                  borderRadius:"50%",
+                  border:"1px solid #00ff8866",
+                  animation:"none",
+                }} />
+              )}
+
               {/* Dot */}
               <div style={{
-                width: isCatena ? 14 : isActive ? 12 : 8,
-                height: isCatena ? 14 : isActive ? 12 : 8,
+                width: isCatena ? 13 : isActive ? 11 : 7,
+                height: isCatena ? 13 : isActive ? 11 : 7,
                 borderRadius:"50%",
-                background: isActive ? zone.color+"55" : zone.color+"33",
+                background: isActive ? zone.color+"66" : zone.color+"33",
                 border:`${isCatena?2:1.5}px solid ${zone.color}`,
                 boxShadow: isCatena
-                  ? `0 0 14px ${zone.color}, 0 0 28px ${zone.color}44`
-                  : isActive ? `0 0 8px ${zone.color}88` : "none",
+                  ? `0 0 12px ${zone.color}, 0 0 24px ${zone.color}55`
+                  : isActive ? `0 0 7px ${zone.color}99` : "none",
                 transition:"all 0.15s",
+                position:"relative", zIndex:2,
               }} />
 
               {/* Label */}
@@ -437,11 +438,11 @@ function CarView({ onZoneClick, selectedZone }) {
                 <div style={{
                   position:"absolute",
                   left:"50%",
-                  bottom:"calc(100% + 8px)",
+                  bottom:"calc(100% + 7px)",
                   transform:"translateX(-50%)",
                   whiteSpace:"nowrap",
-                  background:"rgba(4,8,16,0.95)",
-                  border:`1px solid ${zone.color}66`,
+                  background:"rgba(2,6,12,0.96)",
+                  border:`1px solid ${zone.color}55`,
                   borderRadius:4,
                   padding:"3px 8px",
                   fontSize: isCatena ? 10 : 9,
@@ -449,7 +450,8 @@ function CarView({ onZoneClick, selectedZone }) {
                   color: zone.color,
                   fontFamily:"'Space Grotesk',sans-serif",
                   pointerEvents:"none",
-                  boxShadow: isCatena ? `0 0 12px ${zone.color}33` : "none",
+                  zIndex:30,
+                  boxShadow: isCatena ? `0 0 10px ${zone.color}33` : "none",
                 }}>
                   {isCatena ? "★ CATENA-X · Only verified footprint" : zone.name}
                 </div>
@@ -457,21 +459,14 @@ function CarView({ onZoneClick, selectedZone }) {
             </div>
           );
         })}
-
-        {/* Credit */}
-        <div style={{
-          position:"absolute", bottom:8, right:10,
-          fontSize:9, color:"#334455",
-          fontFamily:"'Space Grotesk',sans-serif",
-        }}>BMW iX xDrive45</div>
       </div>
 
       {!selectedZone && (
         <div style={{
-          textAlign:"center", padding:"6px 0",
-          fontSize:11, color:"#334455",
+          textAlign:"center", padding:"5px 0",
+          fontSize:10, color:"#2a3a4a",
           fontFamily:"'Space Grotesk',sans-serif",
-          flexShrink:0,
+          flexShrink:0, background:"#000",
         }}>
           Switch views · Click any dot to explore carbon data
         </div>
