@@ -249,57 +249,97 @@ function QualityLegend() {
 function CarView({ onZoneClick, selectedZone }) {
   const [hoveredZone, setHoveredZone] = useState(null);
   return (
-    <div style={{ position:"absolute", left:290, right:selectedZone?410:16, top:80, bottom:50, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
-      <svg viewBox="-250 -120 500 240" style={{ width:"100%", height:"100%", maxHeight:"100%" }}>
-        <defs>
-          <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#1a3050" stopOpacity="0.6" /><stop offset="100%" stopColor="#0a1520" stopOpacity="0.4" /></linearGradient>
-          <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#4a90d9" stopOpacity="0.3" /><stop offset="100%" stopColor="#1a3050" stopOpacity="0.15" /></linearGradient>
-          <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
-          <filter id="glowStrong"><feGaussianBlur stdDeviation="6" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
-        </defs>
-        <line x1="-220" y1="75" x2="220" y2="75" stroke="#1a2a3c" strokeWidth="0.5" />
-        {[-145,130].map((x,i)=>(
-          <g key={i}>
-            <circle cx={x} cy={62} r={28} fill="#0a0a0a" stroke="#333" strokeWidth="1.5" />
-            <circle cx={x} cy={62} r={19} fill="none" stroke="#555" strokeWidth="1" />
-            {[0,60,120,180,240,300].map(a=><line key={a} x1={x} y1={62} x2={x+15*Math.cos(a*Math.PI/180)} y2={62+15*Math.sin(a*Math.PI/180)} stroke="#444" strokeWidth="0.8" />)}
+    <div style={{
+      position:"absolute", left:290, right:selectedZone?410:16, top:80, bottom:50,
+    }}>
+      <div style={{ position:"relative", width:"100%", height:"100%" }}>
+        <iframe
+          title="2024 BMW iX"
+          src="https://sketchfab.com/models/b277d6b6109845ffb3cc5de325e71948/embed?autostart=1&ui_controls=0&ui_infos=0&ui_watermark=0&ui_watermark_link=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&preload=1&dnt=1"
+          style={{
+            position:"absolute", inset:0, width:"100%", height:"100%",
+            border:"none", borderRadius:8, background:"#060a10",
+          }}
+          allow="autoplay; fullscreen; xr-spatial-tracking"
+          allowFullScreen
+        />
+        <svg
+          viewBox="-250 -120 500 240"
+          style={{
+            position:"absolute", inset:0, width:"100%", height:"100%",
+            pointerEvents:"none",
+          }}
+        >
+          <defs>
+            <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+            <filter id="glowStrong"><feGaussianBlur stdDeviation="6" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+          </defs>
+          <g style={{pointerEvents:"all", cursor:"pointer"}}
+            onClick={()=>onZoneClick("kidney_grille")}
+            onMouseEnter={()=>setHoveredZone("kidney_grille")}
+            onMouseLeave={()=>setHoveredZone(null)}>
+            <circle cx={155} cy={10} r={hoveredZone==="kidney_grille"||selectedZone==="kidney_grille"?9:6}
+              fill="rgba(0,255,136,0.2)" stroke="#00ff88"
+              strokeWidth={selectedZone==="kidney_grille"?2.5:1.5}
+              filter="url(#glowStrong)" />
+            <line x1={155} y1={-2} x2={155} y2={-45} stroke="#00ff88" strokeWidth="0.8" strokeDasharray="2,2" />
+            <rect x={105} y={-68} width={100} height={24} rx={4} fill="rgba(0,15,8,0.9)" stroke="#00ff8844" strokeWidth="0.5" />
+            <text x={155} y={-56} textAnchor="middle" fill="#00ff88" fontSize="7" fontFamily="monospace" fontWeight="700" style={{pointerEvents:"none"}}>★ CATENA-X</text>
+            <text x={155} y={-48} textAnchor="middle" fill="#00ff8899" fontSize="5" fontFamily="monospace" style={{pointerEvents:"none"}}>Only verified footprint</text>
           </g>
-        ))}
-        <path d="M-190,35 L-190,-5 Q-190,-15 -180,-15 L180,-15 Q190,-15 190,-5 L190,35 Z" fill="url(#bodyGrad)" stroke="#1a3a5c" strokeWidth="0.8" />
-        <path d="M-110,-15 L-95,-60 Q-90,-70 -80,-70 L90,-70 Q95,-70 100,-65 L125,-15 Z" fill="url(#bodyGrad)" stroke="#1a3a5c" strokeWidth="0.8" />
-        <path d="M-100,-17 L-88,-58 Q-85,-63 -78,-63 L88,-63 Q92,-63 95,-58 L118,-17 Z" fill="url(#glassGrad)" stroke="#4a90d966" strokeWidth="0.5" />
-        <rect x={-150} y={32} width={300} height={22} rx={4} fill={selectedZone==="battery"?"#e74c3c55":hoveredZone==="battery"?"#e74c3c33":"#e74c3c18"} stroke={selectedZone==="battery"?"#e74c3c":"#e74c3c66"} strokeWidth={selectedZone==="battery"?2:1} style={{cursor:"pointer"}} filter={selectedZone==="battery"?"url(#glow)":undefined} onClick={()=>onZoneClick("battery")} onMouseEnter={()=>setHoveredZone("battery")} onMouseLeave={()=>setHoveredZone(null)} />
-        <text x={0} y={47} textAnchor="middle" fill={selectedZone==="battery"?"#e74c3c":"#e74c3c99"} fontSize="7" fontFamily="monospace" fontWeight="600" style={{pointerEvents:"none"}}>HV BATTERY PACK · 373 kg · 4,382 kg CO₂e</text>
-        <rect x={140} y={-5} width={40} height={30} rx={4} fill={selectedZone==="front_motor"?"#3498db55":hoveredZone==="front_motor"?"#3498db33":"#3498db18"} stroke={selectedZone==="front_motor"?"#3498db":"#3498db66"} strokeWidth={selectedZone==="front_motor"?2:1} style={{cursor:"pointer"}} filter={selectedZone==="front_motor"?"url(#glow)":undefined} onClick={()=>onZoneClick("front_motor")} onMouseEnter={()=>setHoveredZone("front_motor")} onMouseLeave={()=>setHoveredZone(null)} />
-        <text x={160} y={14} textAnchor="middle" fill="#3498db99" fontSize="5" fontFamily="monospace" style={{pointerEvents:"none"}}>FRONT</text>
-        <text x={160} y={20} textAnchor="middle" fill="#3498db99" fontSize="5" fontFamily="monospace" style={{pointerEvents:"none"}}>MOTOR</text>
-        <rect x={-180} y={-5} width={40} height={30} rx={4} fill={selectedZone==="rear_motor"?"#3498db55":hoveredZone==="rear_motor"?"#3498db33":"#3498db18"} stroke={selectedZone==="rear_motor"?"#3498db":"#3498db66"} strokeWidth={selectedZone==="rear_motor"?2:1} style={{cursor:"pointer"}} filter={selectedZone==="rear_motor"?"url(#glow)":undefined} onClick={()=>onZoneClick("rear_motor")} onMouseEnter={()=>setHoveredZone("rear_motor")} onMouseLeave={()=>setHoveredZone(null)} />
-        <text x={-160} y={14} textAnchor="middle" fill="#3498db99" fontSize="5" fontFamily="monospace" style={{pointerEvents:"none"}}>REAR</text>
-        <text x={-160} y={20} textAnchor="middle" fill="#3498db99" fontSize="5" fontFamily="monospace" style={{pointerEvents:"none"}}>MOTOR</text>
-        <rect x={-80} y={-72} width={170} height={6} rx={2} fill={selectedZone==="cfrp_roof"?"#8e44ad55":hoveredZone==="cfrp_roof"?"#8e44ad33":"#8e44ad18"} stroke={selectedZone==="cfrp_roof"?"#8e44ad":"#8e44ad66"} strokeWidth={selectedZone==="cfrp_roof"?2:0.8} style={{cursor:"pointer"}} onClick={()=>onZoneClick("cfrp_roof")} onMouseEnter={()=>setHoveredZone("cfrp_roof")} onMouseLeave={()=>setHoveredZone(null)} />
-        <text x={5} y={-76} textAnchor="middle" fill="#8e44ad99" fontSize="5" fontFamily="monospace" style={{pointerEvents:"none"}}>CARBON FIBRE ROOF</text>
-        <rect x={186} y={-13} width={10} height={26} rx={3} fill={selectedZone==="kidney_grille"?"#00ff8877":"#00ff8844"} stroke="#00ff88" strokeWidth={selectedZone==="kidney_grille"?2.5:1.5} style={{cursor:"pointer"}} filter="url(#glowStrong)" onClick={()=>onZoneClick("kidney_grille")} onMouseEnter={()=>setHoveredZone("kidney_grille")} onMouseLeave={()=>setHoveredZone(null)} />
-        <line x1={191} y1={-13} x2={175} y2={-55} stroke="#00ff88" strokeWidth="0.8" strokeDasharray="2,2" />
-        <rect x={130} y={-75} width={90} height={22} rx={4} fill="rgba(0,20,10,0.85)" stroke="#00ff8844" strokeWidth="0.5" />
-        <text x={175} y={-65} textAnchor="middle" fill="#00ff88" fontSize="6" fontFamily="monospace" fontWeight="700" style={{pointerEvents:"none"}}>★ CATENA-X</text>
-        <text x={175} y={-57} textAnchor="middle" fill="#00ff8899" fontSize="4.5" fontFamily="monospace" style={{pointerEvents:"none"}}>Only verified footprint</text>
-        <path d="M-190,35 L-190,-5 Q-190,-15 -180,-15 L-110,-15 L-95,-60 Q-90,-70 -80,-70 L90,-70 Q95,-70 100,-65 L125,-15 L180,-15 Q190,-15 190,-5 L190,35 Z" fill="transparent" stroke={selectedZone==="body"?"#95a5a6":"transparent"} strokeWidth={selectedZone==="body"?2:0} style={{cursor:"pointer"}} onClick={()=>onZoneClick("body")} onMouseEnter={()=>setHoveredZone("body")} onMouseLeave={()=>setHoveredZone(null)} />
-        <rect x={186} y={-7} width={6} height={9} rx={1} fill="#4a7aff44" stroke="#4a7aff" strokeWidth="0.5" />
-        <rect x={186} y={5} width={6} height={9} rx={1} fill="#4a7aff44" stroke="#4a7aff" strokeWidth="0.5" />
-        <rect x={-193} y={-5} width={4} height={30} rx={1} fill="#ff202033" stroke="#ff2020" strokeWidth="0.5" />
-        {[{id:"electronics",x:10,y:-45,label:"ELECTRONICS"},{id:"interior",x:-40,y:-35,label:"INTERIOR"},{id:"thermal",x:100,y:-2,label:"THERMAL"},{id:"suspension",x:-145,y:30,label:"SUSPENSION"},{id:"brakes",x:130,y:50,label:"BRAKES"},{id:"glazing",x:10,y:-65,label:"GLAZING"},{id:"safety",x:-50,y:-50,label:"SAFETY"},{id:"wheels",x:130,y:62,label:"WHEELS"},{id:"charging",x:-175,y:30,label:"CHARGING"},{id:"polymers_misc",x:60,y:15,label:"POLYMERS"}].map(item=>{
-          const zone=ZONES.find(z=>z.id===item.id);
-          if(!zone)return null;
-          const isActive=selectedZone===item.id||hoveredZone===item.id;
-          return(<g key={item.id} style={{cursor:"pointer"}} onClick={()=>onZoneClick(item.id)} onMouseEnter={()=>setHoveredZone(item.id)} onMouseLeave={()=>setHoveredZone(null)}><circle cx={item.x} cy={item.y} r={isActive?5:3.5} fill={isActive?zone.color+"44":zone.color+"22"} stroke={zone.color} strokeWidth={isActive?1.2:0.6} />{isActive&&<text x={item.x} y={item.y-8} textAnchor="middle" fill={zone.color} fontSize="5" fontFamily="monospace" fontWeight="600">{item.label}</text>}</g>);
-        })}
-      </svg>
-      {!selectedZone&&<div style={{ position:"absolute", bottom:60, left:"50%", transform:"translateX(-50%)", fontSize:11, color:"#445566", fontFamily:"'Space Grotesk', sans-serif", textAlign:"center" }}>Click any zone to explore its carbon data and data quality</div>}
+          {[
+            {id:"battery",       x:-20,  y:60,  label:"BATTERY"},
+            {id:"body",          x:-30,  y:-20, label:"BODY"},
+            {id:"front_motor",   x:140,  y:20,  label:"FRONT MOTOR"},
+            {id:"rear_motor",    x:-155, y:20,  label:"REAR MOTOR"},
+            {id:"cfrp_roof",     x:20,   y:-80, label:"CARBON FIBRE ROOF"},
+            {id:"electronics",   x:30,   y:-40, label:"ELECTRONICS"},
+            {id:"interior",      x:-20,  y:-30, label:"INTERIOR"},
+            {id:"thermal",       x:100,  y:-10, label:"THERMAL"},
+            {id:"suspension",    x:-130, y:35,  label:"SUSPENSION"},
+            {id:"brakes",        x:120,  y:55,  label:"BRAKES"},
+            {id:"glazing",       x:50,   y:-65, label:"GLAZING"},
+            {id:"safety",        x:-60,  y:-45, label:"SAFETY"},
+            {id:"wheels",        x:125,  y:65,  label:"WHEELS"},
+            {id:"charging",      x:-165, y:10,  label:"CHARGING"},
+            {id:"polymers_misc", x:65,   y:20,  label:"POLYMERS"},
+          ].map(item => {
+            const zone = ZONES.find(z => z.id === item.id);
+            if (!zone) return null;
+            const isActive = selectedZone === item.id || hoveredZone === item.id;
+            return (
+              <g key={item.id} style={{cursor:"pointer", pointerEvents:"all"}}
+                onClick={()=>onZoneClick(item.id)}
+                onMouseEnter={()=>setHoveredZone(item.id)}
+                onMouseLeave={()=>setHoveredZone(null)}>
+                <circle cx={item.x} cy={item.y} r={isActive?7:4}
+                  fill={isActive?zone.color+"44":zone.color+"22"}
+                  stroke={zone.color} strokeWidth={isActive?1.5:0.8}
+                  filter={isActive?"url(#glow)":undefined} />
+                {isActive && (
+                  <text x={item.x} y={item.y-12} textAnchor="middle"
+                    fill={zone.color} fontSize="6" fontFamily="monospace" fontWeight="600"
+                    style={{pointerEvents:"none"}}>{item.label}</text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+        <div style={{
+          position:"absolute", bottom:8, right:8,
+          fontSize:9, color:"#334455", fontFamily:"'Space Grotesk',sans-serif",
+        }}>3D model: DisneyCars / Sketchfab (CC-BY)</div>
+      </div>
+      {!selectedZone && (
+        <div style={{
+          position:"absolute", bottom:16, left:"50%", transform:"translateX(-50%)",
+          fontSize:11, color:"#445566", fontFamily:"'Space Grotesk',sans-serif",
+          textAlign:"center", pointerEvents:"none",
+        }}>Rotate the car freely · Click any dot to explore carbon data</div>
+      )}
     </div>
   );
 }
-
-
 
 function InfoPanel({ selectedZone }) {
   return(
