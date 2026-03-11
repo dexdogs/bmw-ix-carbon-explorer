@@ -523,7 +523,7 @@ export default function App() {
         download="BMW_iX_PCR_PCF_Dataset_Phase1.xlsx"
         style={{ width:36, height:36, borderRadius:8, border:"1px solid #1a2a3c", background:"rgba(8,12,21,0.9)", color:"#556677", cursor:"pointer", fontSize:9, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", textDecoration:"none", fontFamily:"'Space Grotesk',sans-serif", letterSpacing:"0.02em" }}
         title="Export dataset"
-      >CSV↓</a>
+      >{"CSV↓"}</a>
       </div>
       {showInfo&&<InfoPanel selectedZone={selectedZone} />}
     </div>
