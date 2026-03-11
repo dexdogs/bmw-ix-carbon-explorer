@@ -307,7 +307,7 @@ function Header() {
         {[
           ["~30,000","Total Parts"],
           [VEHICLE_DATA.total_pcrs,"Product Category Rules (PCRs)"],
-          [`~${VEHICLE_DATA.total_pcfs_est.toLocaleString()}`,"~3,000 Product Carbon Footprints (PCFs)"],
+          [`~${VEHICLE_DATA.total_pcfs_est.toLocaleString()}`,"Product Carbon Footprints (PCFs)"],
           [`${VEHICLE_DATA.supply_chain_co2e_t}t`,"CO₂ equivalent, cradle-to-gate"],
         ].map(([val,label],i)=>(
           <div key={i} style={{ textAlign:"center", maxWidth:130 }}>
