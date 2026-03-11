@@ -357,7 +357,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
       { id:"body",          cx:44,  cy:44, label:"Hood & Body Structure",    sub:"5.7t CO₂e",             color:"#95a5a6" },
       { id:"glazing",       cx:55,  cy:38, label:"Windshield & Glazing",     sub:"97kg CO₂e",             color:"#bdc3c7" },
       { id:"cfrp_roof",     cx:64,  cy:31.5, label:"CFRP Roof Panel",          sub:"375kg CO₂e",            color:"#8e44ad" },
-      { id:"interior",      cx:62,  cy:42, label:"Interior & Trim",          sub:"749kg CO₂e",            color:"#1abc9c" },
+      { id:"interior",      cx:52,  cy:39, label:"Interior & Trim",          sub:"749kg CO₂e",            color:"#1abc9c" },
       { id:"front_motor",   cx:26,  cy:72, label:"Front Motor + Inverter",   sub:"742kg CO₂e",            color:"#3498db" },
       { id:"wheels",        cx:30,  cy:82, label:"Wheels & Tires",           sub:"596kg CO₂e",            color:"#2ecc71" },
       { id:"brakes",        cx:23,  cy:78, label:"Brake System",             sub:"191kg CO₂e",            color:"#7f8c8d" },
