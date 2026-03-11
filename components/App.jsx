@@ -350,32 +350,32 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
 
   const VIEW_ZONES = {
     front_angle: [
-      { id:"kidney_grille", cx:22,  cy:58,   label:"Kidney Grille",           sub:"★ Catena-X Verified · 8kg CO₂e", color:"#00ff88" },
-      { id:"electronics",   cx:33,  cy:51,   label:"Headlights & Electronics",sub:"1.0t CO₂e",                      color:"#e67e22" },
-      { id:"body",          cx:39,  cy:46,   label:"Hood & Body Structure",   sub:"5.7t CO₂e",                      color:"#95a5a6" },
-      { id:"glazing",       cx:45,  cy:38,   label:"Windshield & Glazing",    sub:"97kg CO₂e",                      color:"#bdc3c7" },
-      { id:"cfrp_roof",     cx:64,  cy:31.5, label:"CFRP Roof Panel",         sub:"375kg CO₂e",                     color:"#8e44ad" },
-      { id:"interior",      cx:52,  cy:39,   label:"Interior & Trim",         sub:"749kg CO₂e",                     color:"#1abc9c" },
-      { id:"front_motor",   cx:32,  cy:62,   label:"Front Motor + Inverter",  sub:"742kg CO₂e",                     color:"#3498db" },
-      { id:"wheels",        cx:55,  cy:73,   label:"Wheels & Tires",          sub:"596kg CO₂e",                     color:"#2ecc71" },
-      { id:"brakes",        cx:57,  cy:63,   label:"Brake System",            sub:"191kg CO₂e",                     color:"#7f8c8d" },
-      { id:"battery",       cx:75,  cy:64,   label:"HV Battery Pack",         sub:"4.4t CO₂e",                      color:"#e74c3c" },
-      { id:"suspension",    cx:24,  cy:70,   label:"Suspension & Steering",   sub:"209kg CO₂e",                     color:"#2980b9" },
-      { id:"polymers_misc", cx:72,  cy:54,   label:"Body Panels & Polymers",  sub:"689kg CO₂e",                     color:"#9b59b6" },
+      { id:"kidney_grille", cx:22,  cy:58,   label:"Kidney Grille",           sub:"1 part", color:"#00ff88" },
+      { id:"electronics",   cx:33,  cy:51,   label:"Headlights & Electronics",sub:"~200 parts",                      color:"#e67e22" },
+      { id:"body",          cx:39,  cy:46,   label:"Hood & Body Structure",   sub:"~850 parts",                      color:"#95a5a6" },
+      { id:"glazing",       cx:45,  cy:38,   label:"Windshield & Glazing",    sub:"~12 parts",                      color:"#bdc3c7" },
+      { id:"cfrp_roof",     cx:64,  cy:31.5, label:"CFRP Roof Panel",         sub:"1 part",                     color:"#8e44ad" },
+      { id:"interior",      cx:52,  cy:39,   label:"Interior & Trim",         sub:"~400 parts",                     color:"#1abc9c" },
+      { id:"front_motor",   cx:32,  cy:62,   label:"Front Motor + Inverter",  sub:"~80 parts",                     color:"#3498db" },
+      { id:"wheels",        cx:55,  cy:73,   label:"Wheels & Tires",          sub:"4 parts",                     color:"#2ecc71" },
+      { id:"brakes",        cx:57,  cy:63,   label:"Brake System",            sub:"~40 parts",                     color:"#7f8c8d" },
+      { id:"battery",       cx:75,  cy:64,   label:"HV Battery Pack",         sub:"~500 parts",                      color:"#e74c3c" },
+      { id:"suspension",    cx:24,  cy:70,   label:"Suspension & Steering",   sub:"~150 parts",                     color:"#2980b9" },
+      { id:"polymers_misc", cx:72,  cy:54,   label:"Body Panels & Polymers",  sub:"~300 parts",                     color:"#9b59b6" },
     ],
     back_angle: [
-      { id:"cfrp_roof",     cx:53,  cy:27,   label:"CFRP Roof Panel",         sub:"375kg CO₂e",                     color:"#8e44ad" },
-      { id:"glazing",       cx:36,  cy:36,   label:"Rear Glass & Glazing",    sub:"97kg CO₂e",                      color:"#bdc3c7" },
-      { id:"interior",      cx:50,  cy:41,   label:"Interior & Trim",         sub:"749kg CO₂e",                     color:"#1abc9c" },
-      { id:"body",          cx:30,  cy:50,   label:"Body Structure",          sub:"5.7t CO₂e",                      color:"#95a5a6" },
-      { id:"electronics",   cx:22,  cy:56,   label:"Taillights & Electronics",sub:"1.0t CO₂e",                      color:"#e67e22" },
-      { id:"rear_motor",    cx:20,  cy:70,   label:"Rear Motor + Inverter",   sub:"743kg CO₂e",                     color:"#3498db" },
-      { id:"wheels",        cx:22,  cy:78,   label:"Rear Wheels & Tires",     sub:"596kg CO₂e",                     color:"#2ecc71" },
-      { id:"suspension",    cx:24,  cy:74,   label:"Suspension & Steering",   sub:"209kg CO₂e",                     color:"#2980b9" },
-      { id:"battery",       cx:42,  cy:78,   label:"HV Battery Pack",         sub:"4.4t CO₂e",                      color:"#e74c3c" },
-      { id:"charging",      cx:63,  cy:57,   label:"Charging System",         sub:"24kg CO₂e",                      color:"#f39c12" },
-      { id:"polymers_misc", cx:72,  cy:66,   label:"Side Panels & Polymers",  sub:"689kg CO₂e",                     color:"#9b59b6" },
-      { id:"brakes",        cx:72,  cy:73,   label:"Brake System",            sub:"191kg CO₂e",                     color:"#7f8c8d" },
+      { id:"cfrp_roof",     cx:53,  cy:27,   label:"CFRP Roof Panel",         sub:"1 part",                     color:"#8e44ad" },
+      { id:"glazing",       cx:36,  cy:36,   label:"Rear Glass & Glazing",    sub:"~12 parts",                      color:"#bdc3c7" },
+      { id:"interior",      cx:50,  cy:41,   label:"Interior & Trim",         sub:"~400 parts",                     color:"#1abc9c" },
+      { id:"body",          cx:30,  cy:50,   label:"Body Structure",          sub:"~850 parts",                      color:"#95a5a6" },
+      { id:"electronics",   cx:22,  cy:56,   label:"Taillights & Electronics",sub:"~200 parts",                      color:"#e67e22" },
+      { id:"rear_motor",    cx:20,  cy:70,   label:"Rear Motor + Inverter",   sub:"~80 parts",                     color:"#3498db" },
+      { id:"wheels",        cx:22,  cy:78,   label:"Rear Wheels & Tires",     sub:"4 parts",                     color:"#2ecc71" },
+      { id:"suspension",    cx:24,  cy:74,   label:"Suspension & Steering",   sub:"~150 parts",                     color:"#2980b9" },
+      { id:"battery",       cx:42,  cy:78,   label:"HV Battery Pack",         sub:"~500 parts",                      color:"#e74c3c" },
+      { id:"charging",      cx:63,  cy:57,   label:"Charging System",         sub:"~30 parts",                      color:"#f39c12" },
+      { id:"polymers_misc", cx:72,  cy:66,   label:"Side Panels & Polymers",  sub:"~300 parts",                     color:"#9b59b6" },
+      { id:"brakes",        cx:72,  cy:73,   label:"Brake System",            sub:"~40 parts",                     color:"#7f8c8d" },
     ],
   };
 
@@ -422,8 +422,8 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
 
             // Tooltip: default above dot, flip below if dot is in top 25%
             const tipAbove = z.cy > 25;
-            const tipH = 8;
-            const tipW = 22;
+            const tipH = 7;
+            const tipW = 26;
             const tipX = Math.min(Math.max(z.cx - tipW/2, 1), 100 - tipW - 1);
             const tipY = tipAbove ? z.cy - tipH - 5 : z.cy + 5;
             const stemY1 = tipAbove ? tipY + tipH : tipY;
@@ -453,7 +453,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
                 {/* Main dot */}
                 <circle
                   cx={z.cx} cy={z.cy}
-                  r={isActive ? 2.4 : 1.5}
+                  r={0.75}
                   fill={z.color}
                   opacity={isFaded ? 0.1 : isActive ? 1 : 0.72}
                   stroke={isActive ? "rgba(255,255,255,0.55)" : "none"}
@@ -479,16 +479,16 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
                     />
                     {/* Zone name */}
                     <text
-                      x={tipX + tipW/2} y={tipY + 5}
+                      x={tipX + tipW/2} y={tipY + 3.8}
                       textAnchor="middle"
                       fill={z.color} fontSize="1.9" fontWeight="700"
                       fontFamily="Space Grotesk, sans-serif"
                     >{z.label}</text>
                     {/* CO2 sub */}
                     <text
-                      x={tipX + tipW/2} y={tipY + 10}
+                      x={tipX + tipW/2} y={tipY + 5.8}
                       textAnchor="middle"
-                      fill="#556677" fontSize="1.6"
+                      fill="#445566" fontSize="1.5"
                       fontFamily="Space Grotesk, sans-serif"
                     >{z.sub}</text>
                   </g>
