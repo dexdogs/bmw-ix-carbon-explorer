@@ -273,13 +273,13 @@ function FeedbackButton() {
   );
 }
 
-function ZoneList({ selectedZone, onZoneClick }) {
+function ZoneList({ selectedZone, onZoneClick, onZoneHover }) {
   const sorted = [...ZONES].sort((a,b)=>b.co2e_kg-a.co2e_kg);
   return (
     <div style={{ position:"absolute", left:16, top:80, bottom:16, width:260, background:"rgba(8,12,21,0.92)", borderRadius:12, border:"1px solid #1a2a3c", padding:12, overflowY:"auto", zIndex:10, fontFamily:"'Space Grotesk', sans-serif" }}>
       <div style={{ fontSize:10, color:"#556677", letterSpacing:1.5, marginBottom:10, fontWeight:700, textTransform:"uppercase" }}>Vehicle Zones — by CO₂ equivalent</div>
       {sorted.map(z=>(
-        <div key={z.id} onClick={()=>onZoneClick(z.id)} style={{ padding:"7px 8px", borderRadius:6, marginBottom:3, cursor:"pointer", background:selectedZone===z.id?"rgba(255,255,255,0.08)":"transparent", border:selectedZone===z.id?`1px solid ${z.color}44`:"1px solid transparent", transition:"all 0.15s" }}>
+        <div key={z.id} onClick={()=>onZoneClick(z.id)} onMouseEnter={()=>onZoneHover&&onZoneHover(z.id)} onMouseLeave={()=>onZoneHover&&onZoneHover(null)} style={{ padding:"7px 8px", borderRadius:6, marginBottom:3, cursor:"pointer", background:selectedZone===z.id?"rgba(255,255,255,0.08)":"transparent", border:selectedZone===z.id?`1px solid ${z.color}44`:"1px solid transparent", transition:"all 0.15s" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <div style={{ display:"flex", alignItems:"center", gap:6 }}>
               <div style={{ width:6, height:6, borderRadius:"50%", background:z.color, flexShrink:0 }} />
@@ -339,9 +339,10 @@ function QualityLegend() {
   );
 }
 
-function CarView({ onZoneClick, selectedZone }) {
+function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
   const [view, setView] = useState("front");
-  const [hoveredZone, setHoveredZone] = useState(null);
+  const [localHover, setLocalHover] = useState(null);
+  const hoveredZone = localHover || externalHover;
 
   const VIEWS = [
     { id:"front", label:"Front", src:"/images/bmw-ix-front.jpg" },
@@ -356,13 +357,13 @@ function CarView({ onZoneClick, selectedZone }) {
       { id:"cfrp_roof",     cx:50,  cy:30 },
       { id:"glazing",       cx:50,  cy:37 },
       { id:"electronics",   cx:32,  cy:53 },
+      { id:"kidney_grille", cx:50,  cy:57 },
       { id:"body",          cx:28,  cy:58 },
       { id:"safety",        cx:36,  cy:62 },
-      { id:"kidney_grille", cx:50,  cy:57 },
+      { id:"front_motor",   cx:50,  cy:68 },
       { id:"suspension",    cx:25,  cy:70 },
       { id:"polymers_misc", cx:50,  cy:72 },
       { id:"brakes",        cx:24,  cy:74 },
-      { id:"front_motor",   cx:50,  cy:68 },
       { id:"battery",       cx:50,  cy:76 },
       { id:"wheels",        cx:24,  cy:78 },
     ],
@@ -373,12 +374,12 @@ function CarView({ onZoneClick, selectedZone }) {
       { id:"body",          cx:50,  cy:54 },
       { id:"electronics",   cx:10,  cy:55 },
       { id:"front_motor",   cx:17,  cy:62 },
-      { id:"polymers_misc", cx:50,  cy:66 },
-      { id:"suspension",    cx:20,  cy:64 },
-      { id:"brakes",        cx:21,  cy:68 },
-      { id:"battery",       cx:50,  cy:73 },
       { id:"rear_motor",    cx:82,  cy:62 },
+      { id:"suspension",    cx:20,  cy:64 },
+      { id:"polymers_misc", cx:50,  cy:66 },
+      { id:"brakes",        cx:21,  cy:68 },
       { id:"wheels",        cx:21,  cy:72 },
+      { id:"battery",       cx:50,  cy:73 },
     ],
     left: [
       { id:"cfrp_roof",     cx:55,  cy:34 },
@@ -387,18 +388,18 @@ function CarView({ onZoneClick, selectedZone }) {
       { id:"body",          cx:50,  cy:54 },
       { id:"charging",      cx:22,  cy:58 },
       { id:"rear_motor",    cx:18,  cy:62 },
+      { id:"front_motor",   cx:83,  cy:62 },
       { id:"suspension",    cx:80,  cy:64 },
       { id:"polymers_misc", cx:50,  cy:66 },
       { id:"brakes",        cx:79,  cy:68 },
-      { id:"battery",       cx:50,  cy:73 },
-      { id:"front_motor",   cx:83,  cy:62 },
       { id:"wheels",        cx:79,  cy:72 },
+      { id:"battery",       cx:50,  cy:73 },
     ],
     back: [
       { id:"cfrp_roof",     cx:50,  cy:31 },
       { id:"glazing",       cx:50,  cy:41 },
-      { id:"safety",        cx:50,  cy:60 },
       { id:"electronics",   cx:28,  cy:52 },
+      { id:"safety",        cx:50,  cy:60 },
       { id:"body",          cx:68,  cy:57 },
       { id:"rear_motor",    cx:50,  cy:66 },
       { id:"polymers_misc", cx:50,  cy:71 },
@@ -412,18 +413,15 @@ function CarView({ onZoneClick, selectedZone }) {
       { id:"wheels",        cx:24,  cy:26 },
       { id:"suspension",    cx:24,  cy:30 },
       { id:"glazing",       cx:42,  cy:48 },
-      { id:"interior",      cx:42,  cy:53 },
       { id:"body",          cx:26,  cy:50 },
       { id:"cfrp_roof",     cx:60,  cy:51 },
+      { id:"interior",      cx:42,  cy:53 },
       { id:"battery",       cx:50,  cy:55 },
       { id:"rear_motor",    cx:50,  cy:77 },
     ],
   };
 
-  // Sort zones by cy so leader lines go top-to-bottom matching label order — no crossing
-  const zones = [...(VIEW_ZONES[view] || [])].sort((a,b) => a.cy - b.cy);
-
-  const LABEL_COL_W = 200; // px — fixed left column width
+  const zones = VIEW_ZONES[view] || [];
 
   return (
     <div style={{
@@ -444,115 +442,71 @@ function CarView({ onZoneClick, selectedZone }) {
         ))}
       </div>
 
-      {/* Main row: label column | photo */}
-      <div style={{ flex:1, display:"flex", minHeight:0 }}>
+      {/* Photo fills all remaining space — leaders drawn on top, NO label column */}
+      <div style={{ flex:1, position:"relative", minHeight:0 }}>
+        <img
+          key={view}
+          src={VIEWS.find(v=>v.id===view).src}
+          alt={"BMW iX " + view}
+          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
+        />
 
-        {/* LEFT LABEL COLUMN — fixed width, black bg, never overlaps photo */}
-        <div style={{
-          width: LABEL_COL_W,
-          flexShrink:0,
-          background:"#000",
-          display:"flex",
-          flexDirection:"column",
-          justifyContent:"center",
-          padding:"4px 8px 4px 4px",
-          gap:3,
-          overflowY:"auto",
-        }}>
+        {/* SVG: leader lines + target dots only. No labels here. */}
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid slice"
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", zIndex:2 }}
+        >
           {zones.map((z) => {
             const zone = ZONES.find(zn => zn.id === z.id);
             if (!zone) return null;
-            const active   = selectedZone === z.id || hoveredZone === z.id;
-            const faded    = selectedZone && selectedZone !== z.id && hoveredZone !== z.id;
-            const isCatena = z.id === "kidney_grille";
-            const co2Label = zone.co2e_kg >= 1000
-              ? (zone.co2e_kg/1000).toFixed(1) + "t CO₂e"
-              : zone.co2e_kg + "kg CO₂e";
+            const active = selectedZone === z.id || hoveredZone === z.id;
+            const faded  = selectedZone && selectedZone !== z.id && hoveredZone !== z.id;
+            if (!active && !faded && selectedZone) return null;
             return (
-              <div
-                key={z.id}
-                onClick={() => onZoneClick(z.id)}
-                onMouseEnter={() => setHoveredZone(z.id)}
-                onMouseLeave={() => setHoveredZone(null)}
-                style={{
-                  cursor:"pointer",
-                  background: active ? zone.color+"22" : "rgba(4,8,16,0.0)",
-                  border:"1px solid " + (active ? zone.color : zone.color+"44"),
-                  borderRadius:4,
-                  padding:"3px 7px",
-                  opacity: faded ? 0.18 : 1,
-                  transition:"all 0.15s",
-                  flexShrink:0,
-                }}
-              >
-                <div style={{
-                  fontSize:9, fontWeight:700, color:zone.color,
-                  fontFamily:"'Space Grotesk',sans-serif",
-                  whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
-                }}>
-                  {isCatena ? "★ " + zone.name : zone.name}
-                </div>
-                <div style={{ fontSize:8, color:"#445566", fontFamily:"'Space Grotesk',sans-serif" }}>
-                  {co2Label}
-                </div>
-              </div>
+              <g key={z.id}>
+                {active && (
+                  <>
+                    <line
+                      x1={z.cx} y1={z.cy - 2}
+                      x2={z.cx} y2={z.cy - 8}
+                      stroke={zone.color} strokeWidth="0.5" opacity="0.8"
+                    />
+                    <rect
+                      x={z.cx - 18} y={z.cy - 18}
+                      width={36} height={9} rx={1.5}
+                      fill="rgba(2,5,10,0.92)"
+                      stroke={zone.color} strokeWidth="0.4"
+                    />
+                    <text
+                      x={z.cx} y={z.cy - 11}
+                      textAnchor="middle"
+                      fill={zone.color} fontSize="3"
+                      fontFamily="Space Grotesk, sans-serif"
+                      fontWeight="600"
+                    >{zone.name}</text>
+                  </>
+                )}
+                <circle
+                  cx={z.cx} cy={z.cy}
+                  r={active ? 2 : 1.2}
+                  fill={zone.color}
+                  opacity={faded ? 0.15 : active ? 1 : 0.7}
+                  stroke={active ? "white" : "none"}
+                  strokeWidth="0.3"
+                />
+              </g>
             );
           })}
-        </div>
-
-        {/* PHOTO + SVG leader lines */}
-        <div style={{ flex:1, position:"relative", minWidth:0 }}>
-          <img
-            key={view}
-            src={VIEWS.find(v=>v.id===view).src}
-            alt={"BMW iX " + view}
-            style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
-          />
-
-          {/* SVG leader lines — coordinate system matches photo pixels via viewBox */}
-          <svg
-            viewBox="0 0 100 100"
-            preserveAspectRatio="xMidYMid slice"
-            style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", zIndex:2 }}
-          >
-            {zones.map((z, i) => {
-              const zone = ZONES.find(zn => zn.id === z.id);
-              if (!zone) return null;
-              const active = selectedZone === z.id || hoveredZone === z.id;
-              const faded  = selectedZone && selectedZone !== z.id && hoveredZone !== z.id;
-              // Label anchor on right edge of label column = left edge of photo = x:0 in SVG
-              // y evenly spaced matching label order
-              const lineY = 5 + i * (90 / zones.length) + (45 / zones.length);
-              return (
-                <g key={z.id}>
-                  {/* Elbow: horizontal from x:0 then diagonal to dot */}
-                  <polyline
-                    points={"0," + lineY + " 8," + lineY + " " + z.cx + "," + z.cy}
-                    fill="none"
-                    stroke={zone.color}
-                    strokeWidth={active ? 0.55 : 0.3}
-                    strokeDasharray={active ? "none" : "1.5,0.8"}
-                    opacity={faded ? 0.1 : active ? 1 : 0.5}
-                  />
-                  {/* Small dot at target */}
-                  <circle cx={z.cx} cy={z.cy} r={active ? 1.4 : 0.8}
-                    fill={zone.color} opacity={faded ? 0.1 : 0.85}
-                  />
-                </g>
-              );
-            })}
-          </svg>
-        </div>
+        </svg>
       </div>
 
-      {!selectedZone && (
-        <div style={{
-          textAlign:"center", padding:"4px 0", flexShrink:0,
-          fontSize:10, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif",
-        }}>
-          Click any label to explore carbon data
-        </div>
-      )}
+      <div style={{
+        textAlign:"center", padding:"4px 0", flexShrink:0,
+        fontSize:10, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif",
+      }}>
+        Hover a zone in the left panel · click to explore carbon data
+      </div>
     </div>
   );
 }
@@ -594,8 +548,8 @@ export default function App() {
     <div style={{ width:"100vw", height:"100vh", background:"#060a10", overflow:"hidden", position:"relative", fontFamily:"'Space Grotesk', sans-serif" }}>
       <div style={{ position:"absolute", inset:0, opacity:0.03, backgroundImage:"linear-gradient(#4a90d9 1px, transparent 1px), linear-gradient(90deg, #4a90d9 1px, transparent 1px)", backgroundSize:"40px 40px" }} />
       <Header />
-      <ZoneList selectedZone={selectedZone} onZoneClick={handleZoneClick} />
-      <CarView onZoneClick={handleZoneClick} selectedZone={selectedZone} />
+      <ZoneList selectedZone={selectedZone} onZoneClick={handleZoneClick} onZoneHover={setHoveredZone} />
+      <CarView onZoneClick={handleZoneClick} selectedZone={selectedZone} hoveredZone={hoveredZone} />
       <DataPanel zone={selectedZone} onClose={()=>setSelectedZone(null)} />
       <QualityLegend />
       <div style={{ position:"absolute", top:82, right:selectedZone?412:18, zIndex:30 }}>
