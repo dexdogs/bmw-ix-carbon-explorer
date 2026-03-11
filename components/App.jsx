@@ -348,44 +348,39 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
     { id:"back_angle",  label:"Rear",  src:"/images/bmw-ix-back-angle.jpg"  },
   ];
 
-  // cx/cy = % of image. Carefully mapped to each photo.
-  // Cards defined per view: label shown in card, arrow tip at cx/cy on photo
   const VIEW_ZONES = {
     front_angle: [
-      { id:"kidney_grille", cx:22,  cy:58, label:"Kidney Grille", sub:"★ Catena-X Verified · 8kg CO₂e",  color:"#00ff88" },
-      { id:"electronics",   cx:33,  cy:51, label:"Headlights & Electronics", sub:"1.0t CO₂e",            color:"#e67e22" },
-      { id:"body",          cx:39,  cy:46, label:"Hood & Body Structure",    sub:"5.7t CO₂e",             color:"#95a5a6" },
-      { id:"glazing",       cx:45,  cy:38, label:"Windshield & Glazing",     sub:"97kg CO₂e",             color:"#bdc3c7" },
-      { id:"cfrp_roof",     cx:64,  cy:31.5, label:"CFRP Roof Panel",          sub:"375kg CO₂e",            color:"#8e44ad" },
-      { id:"interior",      cx:52,  cy:39, label:"Interior & Trim",          sub:"749kg CO₂e",            color:"#1abc9c" },
-      { id:"front_motor",   cx:32,  cy:62, label:"Front Motor + Inverter",   sub:"742kg CO₂e",            color:"#3498db" },
-      { id:"wheels",        cx:55,  cy:73, label:"Wheels & Tires",           sub:"596kg CO₂e",            color:"#2ecc71" },
-      { id:"brakes",        cx:57,  cy:63, label:"Brake System",             sub:"191kg CO₂e",            color:"#7f8c8d" },
-      { id:"battery",       cx:75,  cy:64, label:"HV Battery Pack",          sub:"4.4t CO₂e",             color:"#e74c3c" },
-      { id:"suspension",    cx:24,  cy:70, label:"Suspension & Steering",    sub:"209kg CO₂e",            color:"#2980b9" },
-      { id:"polymers_misc", cx:72,  cy:54, label:"Body Panels & Polymers",   sub:"689kg CO₂e",            color:"#9b59b6" },
+      { id:"kidney_grille", cx:22,  cy:58,   label:"Kidney Grille",           sub:"★ Catena-X Verified · 8kg CO₂e", color:"#00ff88" },
+      { id:"electronics",   cx:33,  cy:51,   label:"Headlights & Electronics",sub:"1.0t CO₂e",                      color:"#e67e22" },
+      { id:"body",          cx:39,  cy:46,   label:"Hood & Body Structure",   sub:"5.7t CO₂e",                      color:"#95a5a6" },
+      { id:"glazing",       cx:45,  cy:38,   label:"Windshield & Glazing",    sub:"97kg CO₂e",                      color:"#bdc3c7" },
+      { id:"cfrp_roof",     cx:64,  cy:31.5, label:"CFRP Roof Panel",         sub:"375kg CO₂e",                     color:"#8e44ad" },
+      { id:"interior",      cx:52,  cy:39,   label:"Interior & Trim",         sub:"749kg CO₂e",                     color:"#1abc9c" },
+      { id:"front_motor",   cx:32,  cy:62,   label:"Front Motor + Inverter",  sub:"742kg CO₂e",                     color:"#3498db" },
+      { id:"wheels",        cx:55,  cy:73,   label:"Wheels & Tires",          sub:"596kg CO₂e",                     color:"#2ecc71" },
+      { id:"brakes",        cx:57,  cy:63,   label:"Brake System",            sub:"191kg CO₂e",                     color:"#7f8c8d" },
+      { id:"battery",       cx:75,  cy:64,   label:"HV Battery Pack",         sub:"4.4t CO₂e",                      color:"#e74c3c" },
+      { id:"suspension",    cx:24,  cy:70,   label:"Suspension & Steering",   sub:"209kg CO₂e",                     color:"#2980b9" },
+      { id:"polymers_misc", cx:72,  cy:54,   label:"Body Panels & Polymers",  sub:"689kg CO₂e",                     color:"#9b59b6" },
     ],
     back_angle: [
-      { id:"cfrp_roof",     cx:53,  cy:27, label:"CFRP Roof Panel",          sub:"375kg CO₂e",            color:"#8e44ad" },
-      { id:"glazing",       cx:36,  cy:36, label:"Rear Glass & Glazing",     sub:"97kg CO₂e",             color:"#bdc3c7" },
-      { id:"interior",      cx:50,  cy:41, label:"Interior & Trim",          sub:"749kg CO₂e",            color:"#1abc9c" },
-      { id:"body",          cx:30,  cy:50, label:"Body Structure",           sub:"5.7t CO₂e",             color:"#95a5a6" },
-      { id:"electronics",   cx:22,  cy:56, label:"Taillights & Electronics", sub:"1.0t CO₂e",             color:"#e67e22" },
-      { id:"rear_motor",    cx:20,  cy:70, label:"Rear Motor + Inverter",    sub:"743kg CO₂e",            color:"#3498db" },
-      { id:"wheels",        cx:22,  cy:78, label:"Rear Wheels & Tires",      sub:"596kg CO₂e",            color:"#2ecc71" },
-      { id:"suspension",    cx:24,  cy:74, label:"Suspension & Steering",    sub:"209kg CO₂e",            color:"#2980b9" },
-      { id:"battery",       cx:42,  cy:78, label:"HV Battery Pack",          sub:"4.4t CO₂e",             color:"#e74c3c" },
-      { id:"charging",      cx:63,  cy:57, label:"Charging System",          sub:"24kg CO₂e",             color:"#f39c12" },
-      { id:"polymers_misc", cx:72,  cy:66, label:"Side Panels & Polymers",   sub:"689kg CO₂e",            color:"#9b59b6" },
-      { id:"brakes",        cx:72,  cy:73, label:"Brake System",             sub:"191kg CO₂e",            color:"#7f8c8d" },
+      { id:"cfrp_roof",     cx:53,  cy:27,   label:"CFRP Roof Panel",         sub:"375kg CO₂e",                     color:"#8e44ad" },
+      { id:"glazing",       cx:36,  cy:36,   label:"Rear Glass & Glazing",    sub:"97kg CO₂e",                      color:"#bdc3c7" },
+      { id:"interior",      cx:50,  cy:41,   label:"Interior & Trim",         sub:"749kg CO₂e",                     color:"#1abc9c" },
+      { id:"body",          cx:30,  cy:50,   label:"Body Structure",          sub:"5.7t CO₂e",                      color:"#95a5a6" },
+      { id:"electronics",   cx:22,  cy:56,   label:"Taillights & Electronics",sub:"1.0t CO₂e",                      color:"#e67e22" },
+      { id:"rear_motor",    cx:20,  cy:70,   label:"Rear Motor + Inverter",   sub:"743kg CO₂e",                     color:"#3498db" },
+      { id:"wheels",        cx:22,  cy:78,   label:"Rear Wheels & Tires",     sub:"596kg CO₂e",                     color:"#2ecc71" },
+      { id:"suspension",    cx:24,  cy:74,   label:"Suspension & Steering",   sub:"209kg CO₂e",                     color:"#2980b9" },
+      { id:"battery",       cx:42,  cy:78,   label:"HV Battery Pack",         sub:"4.4t CO₂e",                      color:"#e74c3c" },
+      { id:"charging",      cx:63,  cy:57,   label:"Charging System",         sub:"24kg CO₂e",                      color:"#f39c12" },
+      { id:"polymers_misc", cx:72,  cy:66,   label:"Side Panels & Polymers",  sub:"689kg CO₂e",                     color:"#9b59b6" },
+      { id:"brakes",        cx:72,  cy:73,   label:"Brake System",            sub:"191kg CO₂e",                     color:"#7f8c8d" },
     ],
   };
 
   const zones = VIEW_ZONES[view] || [];
-  // Sort by cy so leaders go top to bottom — minimise crossing
-  const sorted = [...zones].sort((a,b) => a.cy - b.cy);
-
-  const active = activeZone || externalHover || selectedZone;
+  const hovered = activeZone || externalHover || selectedZone;
 
   return (
     <div style={{
@@ -406,111 +401,117 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
         ))}
       </div>
 
-      {/* Main row: photo (left) + cards (right) */}
-      <div style={{ flex:1, display:"flex", minHeight:0 }}>
+      {/* Photo — full width, SVG dots + popups on top */}
+      <div style={{ flex:1, position:"relative", minHeight:0 }}>
+        <img
+          key={view}
+          src={VIEWS.find(v=>v.id===view).src}
+          alt={"BMW iX " + view}
+          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
+        />
 
-        {/* PHOTO — takes ~65% width */}
-        <div style={{ flex:"0 0 65%", position:"relative" }}>
-          <img
-            key={view}
-            src={VIEWS.find(v=>v.id===view).src}
-            alt={"BMW iX " + view}
-            style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
-          />
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid slice"
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"all", zIndex:2, overflow:"visible" }}
+        >
+          {zones.map(z => {
+            const isActive = hovered === z.id;
+            const isFaded  = hovered && hovered !== z.id;
+            const isCatena = z.id === "kidney_grille";
 
-          {/* SVG: dot targets only — no labels on photo */}
-          <svg
-            viewBox="0 0 100 100"
-            preserveAspectRatio="xMidYMid slice"
-            style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", zIndex:2 }}
-          >
-            {sorted.map(z => {
-              const isActive = active === z.id;
-              const isFaded  = active && active !== z.id;
-              return (
-                <g key={z.id}>
-                  {isActive && (
-                    <circle cx={z.cx} cy={z.cy} r={5}
-                      fill={z.color} fillOpacity={0.15}
-                      stroke={z.color} strokeWidth={0.5}
-                    />
-                  )}
-                  <circle
-                    cx={z.cx} cy={z.cy} r={isActive ? 2.2 : 1.3}
-                    fill={z.color}
-                    opacity={isFaded ? 0.12 : isActive ? 1 : 0.65}
-                    stroke={isActive ? "rgba(255,255,255,0.5)" : "none"}
-                    strokeWidth={0.4}
-                  />
-                </g>
-              );
-            })}
-          </svg>
-        </div>
+            // Tooltip: default above dot, flip below if dot is in top 25%
+            const tipAbove = z.cy > 25;
+            const tipH = 13;
+            const tipW = 38;
+            const tipX = Math.min(Math.max(z.cx - tipW/2, 1), 100 - tipW - 1);
+            const tipY = tipAbove ? z.cy - tipH - 5 : z.cy + 5;
+            const stemY1 = tipAbove ? tipY + tipH : tipY;
+            const stemY2 = tipAbove ? z.cy - 2 : z.cy + 2;
 
-        {/* CARDS COLUMN — 35% width, scrollable */}
-        <div style={{
-          flex:"0 0 35%",
-          overflowY:"auto",
-          background:"#020508",
-          borderLeft:"1px solid #0a1520",
-          display:"flex",
-          flexDirection:"column",
-          justifyContent:"center",
-          padding:"6px 8px",
-          gap:4,
-        }}>
-          {sorted.map(z => {
-            const isActive = active === z.id;
-            const isFaded  = active && active !== z.id;
             return (
-              <div
-                key={z.id}
-                onClick={() => { onZoneClick(z.id); setActiveZone(z.id); }}
+              <g key={z.id}
                 onMouseEnter={() => setActiveZone(z.id)}
                 onMouseLeave={() => setActiveZone(null)}
-                style={{
-                  display:"flex", alignItems:"center", gap:6,
-                  cursor:"pointer",
-                  padding:"5px 8px",
-                  borderRadius:4,
-                  border:`1px solid ${isActive ? z.color : z.color+"33"}`,
-                  background: isActive ? z.color+"18" : "transparent",
-                  opacity: isFaded ? 0.2 : 1,
-                  transition:"all 0.15s",
-                  flexShrink:0,
-                }}
+                onClick={() => onZoneClick(z.id)}
+                style={{ cursor:"pointer" }}
               >
-                {/* Color dot */}
-                <div style={{
-                  width:6, height:6, borderRadius:"50%",
-                  background: z.color,
-                  flexShrink:0,
-                  boxShadow: isActive ? `0 0 6px ${z.color}` : "none",
-                }}/>
-                <div style={{ minWidth:0 }}>
-                  <div style={{
-                    fontSize:10, fontWeight:700, color: isActive ? z.color : "#8899aa",
-                    fontFamily:"'Space Grotesk',sans-serif",
-                    whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
-                    transition:"color 0.15s",
-                  }}>{z.label}</div>
-                  <div style={{
-                    fontSize:8, color:"#2a3a4a",
-                    fontFamily:"'Space Grotesk',sans-serif",
-                  }}>{z.sub}</div>
-                </div>
-              </div>
+                {/* Pulse ring */}
+                {isActive && (
+                  <circle cx={z.cx} cy={z.cy} r={5.5}
+                    fill={z.color} fillOpacity={0.12}
+                    stroke={z.color} strokeWidth={0.4} strokeOpacity={0.5}
+                  />
+                )}
+                {/* Catena extra ring */}
+                {isCatena && (
+                  <circle cx={z.cx} cy={z.cy} r={4}
+                    fill="none" stroke={z.color}
+                    strokeWidth={0.4} strokeDasharray="1,1" opacity={0.6}
+                  />
+                )}
+                {/* Main dot */}
+                <circle
+                  cx={z.cx} cy={z.cy}
+                  r={isActive ? 2.4 : 1.5}
+                  fill={z.color}
+                  opacity={isFaded ? 0.1 : isActive ? 1 : 0.72}
+                  stroke={isActive ? "rgba(255,255,255,0.55)" : "none"}
+                  strokeWidth={0.45}
+                />
+
+                {/* Popup tooltip — only on hover */}
+                {isActive && (
+                  <g style={{ pointerEvents:"none" }}>
+                    {/* Stem */}
+                    <line
+                      x1={z.cx} y1={stemY1}
+                      x2={z.cx} y2={stemY2}
+                      stroke={z.color} strokeWidth={0.4} opacity={0.7}
+                    />
+                    {/* Card background */}
+                    <rect
+                      x={tipX} y={tipY}
+                      width={tipW} height={tipH}
+                      rx={1.8}
+                      fill="rgba(2,5,12,0.96)"
+                      stroke={z.color} strokeWidth={0.45}
+                    />
+                    {/* Zone name */}
+                    <text
+                      x={tipX + tipW/2} y={tipY + 5}
+                      textAnchor="middle"
+                      fill={z.color} fontSize="3.2" fontWeight="700"
+                      fontFamily="Space Grotesk, sans-serif"
+                    >{z.label}</text>
+                    {/* CO2 sub */}
+                    <text
+                      x={tipX + tipW/2} y={tipY + 10}
+                      textAnchor="middle"
+                      fill="#556677" fontSize="2.6"
+                      fontFamily="Space Grotesk, sans-serif"
+                    >{z.sub}</text>
+                  </g>
+                )}
+              </g>
             );
           })}
-        </div>
-      </div>
+        </svg>
 
-      <div style={{
-        textAlign:"center", padding:"3px 0", flexShrink:0,
-        fontSize:9, color:"#1a2a3a", fontFamily:"'Space Grotesk',sans-serif",
-      }}>
-        Hover or click a zone · left panel also works
+        {/* Hint */}
+        <div style={{
+          position:"absolute", bottom:10, left:0, right:0,
+          textAlign:"center", pointerEvents:"none", zIndex:3,
+        }}>
+          <div style={{
+            display:"inline-block",
+            background:"rgba(2,5,12,0.75)", border:"1px solid #0d1a2a",
+            borderRadius:5, padding:"4px 12px",
+            fontSize:9, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif",
+          }}>
+            Hover dots to identify parts · click to explore carbon data
+          </div>
+        </div>
       </div>
     </div>
   );
