@@ -17,48 +17,68 @@ export default function MyApp({ Component, pageProps }) {
           * { box-sizing: border-box; margin: 0; padding: 0; }
           body { background: #060a10; overflow: hidden; font-family: 'Space Grotesk', sans-serif; }
           @media (max-width: 768px) {
-            body { overflow: auto !important; }
+            body { overflow: hidden !important; }
+
+            /* Hide zone list entirely */
             .bmw-zonelist { display: none !important; }
+
+            /* Hide data quality legend entirely */
+            .bmw-legend { display: none !important; }
+
+            /* Header: single compact row */
+            .bmw-header {
+              height: 56px !important;
+              min-height: 56px !important;
+              flex-wrap: nowrap !important;
+              padding: 0 8px !important;
+              gap: 0 !important;
+              align-items: center !important;
+              overflow: hidden !important;
+            }
+
+            /* Buttons: hide on mobile, use dots only */
+            .bmw-buttons { display: none !important; }
+
+            /* CarView: full width, below header, leave 45vh for bottom sheet */
             .bmw-carview {
               left: 0 !important;
               right: 0 !important;
-              top: 80px !important;
-              bottom: 44px !important;
+              top: 56px !important;
+              bottom: 0 !important;
             }
+
+            /* Data panel: bottom sheet — 45vh, car always visible above */
             .bmw-datapanel {
               left: 0 !important;
               right: 0 !important;
               width: 100% !important;
-              top: 80px !important;
+              top: auto !important;
               bottom: 0 !important;
-              border-radius: 0 !important;
-              max-height: calc(100vh - 80px) !important;
+              height: 48vh !important;
+              max-height: 48vh !important;
+              border-radius: 16px 16px 0 0 !important;
+              border-left: none !important;
+              border-right: none !important;
+              border-bottom: none !important;
+              z-index: 50 !important;
             }
+
+            /* View switcher: visible, full width, below header */
+            .bmw-viewswitcher {
+              padding: 4px 8px !important;
+            }
+
+            /* Info panel: bottom sheet same treatment */
             .bmw-infopanel {
               left: 0 !important;
               right: 0 !important;
               width: 100% !important;
-              top: 80px !important;
-              max-height: calc(100vh - 80px) !important;
-              border-radius: 0 !important;
-            }
-            .bmw-buttons {
-              right: 4px !important;
-              top: 84px !important;
-            }
-            .bmw-legend {
-              font-size: 7px !important;
-              padding: 4px 6px !important;
-              gap: 6px !important;
-              bottom: 4px !important;
-            }
-            .bmw-header {
-              height: auto !important;
-              min-height: 80px !important;
-              flex-wrap: wrap !important;
-              padding: 6px 10px !important;
-              gap: 4px !important;
-              align-items: flex-start !important;
+              top: auto !important;
+              bottom: 0 !important;
+              height: 55vh !important;
+              max-height: 55vh !important;
+              border-radius: 16px 16px 0 0 !important;
+              z-index: 50 !important;
             }
           }
 

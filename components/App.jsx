@@ -388,7 +388,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
       display:"flex", flexDirection:"column", background:"#000",
     }}>
       {/* View switcher */}
-      <div style={{ display:"flex", gap:8, padding:"6px 12px", justifyContent:"center", flexShrink:0 }}>
+      <div style={{ display:"flex", gap:8, padding:"6px 12px", justifyContent:"center", flexShrink:0 }} className="bmw-viewswitcher">
         {VIEWS.map(v => (
           <button key={v.id} onClick={()=>{ setView(v.id); setActiveZone(null); }} style={{
             padding:"4px 28px", borderRadius:6, cursor:"pointer",
@@ -407,7 +407,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
           key={view}
           src={VIEWS.find(v=>v.id===view).src}
           alt={"BMW iX " + view}
-          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center center", display:"block" }}
+          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 60%", display:"block" }}
         />
 
         <svg
