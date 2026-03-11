@@ -149,7 +149,7 @@ function DataPanel({ zone, onClose }) {
       {isCatenaX && <div style={{ background:"rgba(0,255,136,0.08)", border:"1px solid #00ff8844", borderRadius:6, padding:"8px 12px", marginBottom:12, fontSize:10, color:"#00ff88", letterSpacing:1, textTransform:"uppercase", fontWeight:700 }}>★ Catena-X Verified Data Point</div>}
       <div style={{ fontSize:15, fontWeight:700, color:z.color, marginBottom:4 }}>{z.name}</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:12 }}>
-        {[[z.pcr_count,"Product Category Rules (PCRs)"],[z.parts.toLocaleString(),"Parts"],[`${z.weight_kg} kg`,"Weight"],[`${z.co2e_kg.toLocaleString()} kg`,"CO₂ equivalent"]].map(([val,label],i)=>(
+        {[[z.pcr_count,"Product Category Rules (PCRs)"],[z.parts.toLocaleString(),"Parts"],[`${z.weight_kg} kg`,"Weight"],[`${z.co2e_kg.toLocaleString()} kg / ${Math.round(z.co2e_kg*2.205).toLocaleString()} lb`,"CO₂ equivalent"]].map(([val,label],i)=>(
           <div key={i} style={{ background:"rgba(255,255,255,0.03)", borderRadius:6, padding:"8px 10px" }}>
             <div style={{ fontSize:18, fontWeight:700, color:"#e0e6ed" }}>{val}</div>
             <div style={{ fontSize:9, color:"#556677", letterSpacing:0.5 }}>{label}</div>
@@ -350,32 +350,32 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
 
   const VIEW_ZONES = {
     front_angle: [
-      { id:"kidney_grille", cx:22,  cy:58,   label:"Kidney Grille",           sub:"1 part", color:"#00ff88" },
-      { id:"electronics",   cx:33,  cy:51,   label:"Headlights & Electronics",sub:"~200 parts",                      color:"#e67e22" },
-      { id:"body",          cx:39,  cy:46,   label:"Hood & Body Structure",   sub:"~850 parts",                      color:"#95a5a6" },
-      { id:"glazing",       cx:45,  cy:38,   label:"Windshield & Glazing",    sub:"~12 parts",                      color:"#bdc3c7" },
-      { id:"cfrp_roof",     cx:64,  cy:31.5, label:"CFRP Roof Panel",         sub:"1 part",                     color:"#8e44ad" },
-      { id:"interior",      cx:52,  cy:39,   label:"Interior & Trim",         sub:"~400 parts",                     color:"#1abc9c" },
-      { id:"front_motor",   cx:32,  cy:62,   label:"Front Motor + Inverter",  sub:"~80 parts",                     color:"#3498db" },
-      { id:"wheels",        cx:55,  cy:73,   label:"Wheels & Tires",          sub:"4 parts",                     color:"#2ecc71" },
-      { id:"brakes",        cx:57,  cy:63,   label:"Brake System",            sub:"~40 parts",                     color:"#7f8c8d" },
-      { id:"battery",       cx:75,  cy:64,   label:"HV Battery Pack",         sub:"~500 parts",                      color:"#e74c3c" },
-      { id:"suspension",    cx:24,  cy:70,   label:"Suspension & Steering",   sub:"~150 parts",                     color:"#2980b9" },
-      { id:"polymers_misc", cx:72,  cy:54,   label:"Body Panels & Polymers",  sub:"~300 parts",                     color:"#9b59b6" },
+      { id:"kidney_grille", cx:22,  cy:58,   label:"Kidney Grille",           sub:"3 parts · 1 PCRs", color:"#00ff88" },
+      { id:"electronics",   cx:33,  cy:51,   label:"Headlights & Electronics",sub:"1,800 parts · 7 PCRs",                      color:"#e67e22" },
+      { id:"body",          cx:39,  cy:46,   label:"Hood & Body Structure",   sub:"2,000 parts · 15 PCRs",                      color:"#95a5a6" },
+      { id:"glazing",       cx:45,  cy:38,   label:"Windshield & Glazing",    sub:"11 parts · 3 PCRs",                      color:"#bdc3c7" },
+      { id:"cfrp_roof",     cx:64,  cy:31.5, label:"CFRP Roof Panel",         sub:"5 parts · 1 PCRs",                     color:"#8e44ad" },
+      { id:"interior",      cx:52,  cy:39,   label:"Interior & Trim",         sub:"400 parts · 8 PCRs",                     color:"#1abc9c" },
+      { id:"front_motor",   cx:32,  cy:62,   label:"Front Motor + Inverter",  sub:"20 parts · 3 PCRs",                     color:"#3498db" },
+      { id:"wheels",        cx:55,  cy:73,   label:"Wheels & Tires",          sub:"12 parts · 3 PCRs",                     color:"#2ecc71" },
+      { id:"brakes",        cx:57,  cy:63,   label:"Brake System",            sub:"60 parts · 4 PCRs",                     color:"#7f8c8d" },
+      { id:"battery",       cx:75,  cy:64,   label:"HV Battery Pack",         sub:"60 parts · 9 PCRs",                      color:"#e74c3c" },
+      { id:"suspension",    cx:24,  cy:70,   label:"Suspension & Steering",   sub:"220 parts · 6 PCRs",                     color:"#2980b9" },
+      { id:"polymers_misc", cx:72,  cy:54,   label:"Body Panels & Polymers",  sub:"600 parts · 9 PCRs",                     color:"#9b59b6" },
     ],
     back_angle: [
-      { id:"cfrp_roof",     cx:53,  cy:27,   label:"CFRP Roof Panel",         sub:"1 part",                     color:"#8e44ad" },
-      { id:"glazing",       cx:36,  cy:36,   label:"Rear Glass & Glazing",    sub:"~12 parts",                      color:"#bdc3c7" },
-      { id:"interior",      cx:50,  cy:41,   label:"Interior & Trim",         sub:"~400 parts",                     color:"#1abc9c" },
-      { id:"body",          cx:30,  cy:50,   label:"Body Structure",          sub:"~850 parts",                      color:"#95a5a6" },
-      { id:"electronics",   cx:22,  cy:56,   label:"Taillights & Electronics",sub:"~200 parts",                      color:"#e67e22" },
-      { id:"rear_motor",    cx:20,  cy:70,   label:"Rear Motor + Inverter",   sub:"~80 parts",                     color:"#3498db" },
-      { id:"wheels",        cx:22,  cy:78,   label:"Rear Wheels & Tires",     sub:"4 parts",                     color:"#2ecc71" },
-      { id:"suspension",    cx:24,  cy:74,   label:"Suspension & Steering",   sub:"~150 parts",                     color:"#2980b9" },
-      { id:"battery",       cx:42,  cy:78,   label:"HV Battery Pack",         sub:"~500 parts",                      color:"#e74c3c" },
-      { id:"charging",      cx:63,  cy:57,   label:"Charging System",         sub:"~30 parts",                      color:"#f39c12" },
-      { id:"polymers_misc", cx:72,  cy:66,   label:"Side Panels & Polymers",  sub:"~300 parts",                     color:"#9b59b6" },
-      { id:"brakes",        cx:72,  cy:73,   label:"Brake System",            sub:"~40 parts",                     color:"#7f8c8d" },
+      { id:"cfrp_roof",     cx:53,  cy:27,   label:"CFRP Roof Panel",         sub:"5 parts · 1 PCRs",                     color:"#8e44ad" },
+      { id:"glazing",       cx:36,  cy:36,   label:"Rear Glass & Glazing",    sub:"11 parts · 3 PCRs",                      color:"#bdc3c7" },
+      { id:"interior",      cx:50,  cy:41,   label:"Interior & Trim",         sub:"400 parts · 8 PCRs",                     color:"#1abc9c" },
+      { id:"body",          cx:30,  cy:50,   label:"Body Structure",          sub:"2,000 parts · 15 PCRs",                      color:"#95a5a6" },
+      { id:"electronics",   cx:22,  cy:56,   label:"Taillights & Electronics",sub:"1,800 parts · 7 PCRs",                      color:"#e67e22" },
+      { id:"rear_motor",    cx:20,  cy:70,   label:"Rear Motor + Inverter",   sub:"20 parts · 3 PCRs",                     color:"#3498db" },
+      { id:"wheels",        cx:22,  cy:78,   label:"Rear Wheels & Tires",     sub:"12 parts · 3 PCRs",                     color:"#2ecc71" },
+      { id:"suspension",    cx:24,  cy:74,   label:"Suspension & Steering",   sub:"220 parts · 6 PCRs",                     color:"#2980b9" },
+      { id:"battery",       cx:42,  cy:78,   label:"HV Battery Pack",         sub:"60 parts · 9 PCRs",                      color:"#e74c3c" },
+      { id:"charging",      cx:63,  cy:57,   label:"Charging System",         sub:"5 parts · 2 PCRs",                      color:"#f39c12" },
+      { id:"polymers_misc", cx:72,  cy:66,   label:"Side Panels & Polymers",  sub:"600 parts · 9 PCRs",                     color:"#9b59b6" },
+      { id:"brakes",        cx:72,  cy:73,   label:"Brake System",            sub:"60 parts · 4 PCRs",                     color:"#7f8c8d" },
     ],
   };
 
@@ -438,7 +438,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
               >
                 {/* Pulse ring */}
                 {isActive && (
-                  <circle cx={z.cx} cy={z.cy} r={5.5}
+                  <circle cx={z.cx} cy={z.cy} r={3.9}
                     fill={z.color} fillOpacity={0.12}
                     stroke={z.color} strokeWidth={0.4} strokeOpacity={0.5}
                   />
@@ -465,8 +465,8 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
                   <g style={{ pointerEvents:"none" }}>
                     {/* Stem */}
                     <line
-                      x1={z.cx} y1={stemY1}
-                      x2={z.cx} y2={stemY2}
+                      x1={z.cx} y1={tipAbove ? z.cy - 0.75 : z.cy + 0.75}
+                      x2={z.cx} y2={tipAbove ? tipY + tipH : tipY}
                       stroke={z.color} strokeWidth={0.2} opacity={0.7}
                     />
                     {/* Card background */}
@@ -479,14 +479,14 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
                     />
                     {/* Zone name */}
                     <text
-                      x={tipX + tipW/2} y={tipY + 3.8}
+                      x={tipX + tipW/2} y={tipY + 2.8}
                       textAnchor="middle"
                       fill={z.color} fontSize="1.9" fontWeight="700"
                       fontFamily="Space Grotesk, sans-serif"
                     >{z.label}</text>
                     {/* CO2 sub */}
                     <text
-                      x={tipX + tipW/2} y={tipY + 5.8}
+                      x={tipX + tipW/2} y={tipY + 5.4}
                       textAnchor="middle"
                       fill="#445566" fontSize="1.5"
                       fontFamily="Space Grotesk, sans-serif"
