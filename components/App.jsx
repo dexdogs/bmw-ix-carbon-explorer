@@ -353,76 +353,77 @@ function CarView({ onZoneClick, selectedZone }) {
 
   const VIEW_ZONES = {
     front: [
-      { id:"kidney_grille", cx:50,  cy:57 },
-      { id:"electronics",   cx:32,  cy:53 },
-      { id:"front_motor",   cx:50,  cy:68 },
-      { id:"glazing",       cx:50,  cy:37 },
       { id:"cfrp_roof",     cx:50,  cy:30 },
+      { id:"glazing",       cx:50,  cy:37 },
+      { id:"electronics",   cx:32,  cy:53 },
       { id:"body",          cx:28,  cy:58 },
-      { id:"wheels",        cx:24,  cy:78 },
-      { id:"brakes",        cx:24,  cy:74 },
-      { id:"suspension",    cx:25,  cy:70 },
-      { id:"battery",       cx:50,  cy:76 },
-      { id:"polymers_misc", cx:50,  cy:72 },
       { id:"safety",        cx:36,  cy:62 },
+      { id:"kidney_grille", cx:50,  cy:57 },
+      { id:"suspension",    cx:25,  cy:70 },
+      { id:"polymers_misc", cx:50,  cy:72 },
+      { id:"brakes",        cx:24,  cy:74 },
+      { id:"front_motor",   cx:50,  cy:68 },
+      { id:"battery",       cx:50,  cy:76 },
+      { id:"wheels",        cx:24,  cy:78 },
     ],
     right: [
-      { id:"body",          cx:50,  cy:54 },
-      { id:"glazing",       cx:47,  cy:42 },
       { id:"cfrp_roof",     cx:44,  cy:34 },
+      { id:"glazing",       cx:47,  cy:42 },
       { id:"interior",      cx:45,  cy:48 },
+      { id:"body",          cx:50,  cy:54 },
+      { id:"electronics",   cx:10,  cy:55 },
       { id:"front_motor",   cx:17,  cy:62 },
+      { id:"polymers_misc", cx:50,  cy:66 },
+      { id:"suspension",    cx:20,  cy:64 },
+      { id:"brakes",        cx:21,  cy:68 },
+      { id:"battery",       cx:50,  cy:73 },
       { id:"rear_motor",    cx:82,  cy:62 },
       { id:"wheels",        cx:21,  cy:72 },
-      { id:"brakes",        cx:21,  cy:68 },
-      { id:"suspension",    cx:20,  cy:64 },
-      { id:"battery",       cx:50,  cy:73 },
-      { id:"electronics",   cx:10,  cy:55 },
-      { id:"polymers_misc", cx:50,  cy:66 },
     ],
     left: [
-      { id:"body",          cx:50,  cy:54 },
-      { id:"glazing",       cx:52,  cy:42 },
       { id:"cfrp_roof",     cx:55,  cy:34 },
+      { id:"glazing",       cx:52,  cy:42 },
       { id:"interior",      cx:54,  cy:48 },
-      { id:"front_motor",   cx:83,  cy:62 },
-      { id:"rear_motor",    cx:18,  cy:62 },
-      { id:"wheels",        cx:79,  cy:72 },
-      { id:"brakes",        cx:79,  cy:68 },
-      { id:"suspension",    cx:80,  cy:64 },
-      { id:"battery",       cx:50,  cy:73 },
+      { id:"body",          cx:50,  cy:54 },
       { id:"charging",      cx:22,  cy:58 },
+      { id:"rear_motor",    cx:18,  cy:62 },
+      { id:"suspension",    cx:80,  cy:64 },
       { id:"polymers_misc", cx:50,  cy:66 },
+      { id:"brakes",        cx:79,  cy:68 },
+      { id:"battery",       cx:50,  cy:73 },
+      { id:"front_motor",   cx:83,  cy:62 },
+      { id:"wheels",        cx:79,  cy:72 },
     ],
     back: [
-      { id:"rear_motor",    cx:50,  cy:66 },
-      { id:"battery",       cx:50,  cy:76 },
-      { id:"glazing",       cx:50,  cy:41 },
       { id:"cfrp_roof",     cx:50,  cy:31 },
-      { id:"body",          cx:68,  cy:57 },
-      { id:"polymers_misc", cx:50,  cy:71 },
-      { id:"wheels",        cx:28,  cy:78 },
-      { id:"brakes",        cx:28,  cy:74 },
-      { id:"suspension",    cx:27,  cy:70 },
-      { id:"electronics",   cx:28,  cy:52 },
+      { id:"glazing",       cx:50,  cy:41 },
       { id:"safety",        cx:50,  cy:60 },
+      { id:"electronics",   cx:28,  cy:52 },
+      { id:"body",          cx:68,  cy:57 },
+      { id:"rear_motor",    cx:50,  cy:66 },
+      { id:"polymers_misc", cx:50,  cy:71 },
+      { id:"suspension",    cx:27,  cy:70 },
+      { id:"brakes",        cx:28,  cy:74 },
+      { id:"battery",       cx:50,  cy:76 },
+      { id:"wheels",        cx:28,  cy:78 },
     ],
     top: [
-      { id:"cfrp_roof",     cx:60,  cy:51 },
+      { id:"front_motor",   cx:50,  cy:22 },
+      { id:"wheels",        cx:24,  cy:26 },
+      { id:"suspension",    cx:24,  cy:30 },
       { id:"glazing",       cx:42,  cy:48 },
       { id:"interior",      cx:42,  cy:53 },
       { id:"body",          cx:26,  cy:50 },
+      { id:"cfrp_roof",     cx:60,  cy:51 },
       { id:"battery",       cx:50,  cy:55 },
-      { id:"front_motor",   cx:50,  cy:22 },
       { id:"rear_motor",    cx:50,  cy:77 },
-      { id:"wheels",        cx:24,  cy:26 },
-      { id:"suspension",    cx:24,  cy:30 },
     ],
   };
 
-  const zones = VIEW_ZONES[view] || [];
-  const LABEL_W = 22;  // % of container width
-  const LABEL_X = 1;   // % from left edge
+  // Sort zones by cy so leader lines go top-to-bottom matching label order — no crossing
+  const zones = [...(VIEW_ZONES[view] || [])].sort((a,b) => a.cy - b.cy);
+
+  const LABEL_COL_W = 200; // px — fixed left column width
 
   return (
     <div style={{
@@ -443,64 +444,30 @@ function CarView({ onZoneClick, selectedZone }) {
         ))}
       </div>
 
-      {/* Photo + overlay */}
-      <div style={{ flex:1, position:"relative", overflow:"hidden" }}>
+      {/* Main row: label column | photo */}
+      <div style={{ flex:1, display:"flex", minHeight:0 }}>
 
-        {/* Photo */}
-        <img
-          key={view}
-          src={VIEWS.find(v=>v.id===view).src}
-          alt={"BMW iX " + view}
-          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
-        />
-
-        {/* SVG leader lines layer — above photo */}
-        <svg
-          viewBox="0 0 100 100"
-          preserveAspectRatio="xMidYMid slice"
-          style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", zIndex:2 }}
-        >
-          {zones.map((z, i) => {
-            const zone = ZONES.find(zn => zn.id === z.id);
-            if (!zone) return null;
-            const active = selectedZone === z.id || hoveredZone === z.id;
-            const faded  = selectedZone && selectedZone !== z.id && hoveredZone !== z.id;
-            const topPct = 4 + i * (88 / zones.length) + (44 / zones.length);
-            const lineX1 = LABEL_X + LABEL_W;
-            const lineY1 = topPct;
-            return (
-              <g key={z.id}>
-                <line
-                  x1={lineX1} y1={lineY1}
-                  x2={z.cx}   y2={z.cy}
-                  stroke={zone.color}
-                  strokeWidth={active ? 0.55 : 0.3}
-                  strokeDasharray={active ? "none" : "1.5,0.8"}
-                  opacity={faded ? 0.12 : active ? 1 : 0.55}
-                />
-                <circle
-                  cx={z.cx} cy={z.cy}
-                  r={active ? 1.6 : 1.0}
-                  fill={zone.color}
-                  opacity={faded ? 0.12 : 0.9}
-                />
-              </g>
-            );
-          })}
-        </svg>
-
-        {/* HTML label cards — left strip, above photo */}
-        <div style={{ position:"absolute", inset:0, zIndex:3, pointerEvents:"none" }}>
-          {zones.map((z, i) => {
+        {/* LEFT LABEL COLUMN — fixed width, black bg, never overlaps photo */}
+        <div style={{
+          width: LABEL_COL_W,
+          flexShrink:0,
+          background:"#000",
+          display:"flex",
+          flexDirection:"column",
+          justifyContent:"center",
+          padding:"4px 8px 4px 4px",
+          gap:3,
+          overflowY:"auto",
+        }}>
+          {zones.map((z) => {
             const zone = ZONES.find(zn => zn.id === z.id);
             if (!zone) return null;
             const active   = selectedZone === z.id || hoveredZone === z.id;
             const faded    = selectedZone && selectedZone !== z.id && hoveredZone !== z.id;
             const isCatena = z.id === "kidney_grille";
             const co2Label = zone.co2e_kg >= 1000
-              ? (zone.co2e_kg/1000).toFixed(1) + "t CO2e"
-              : zone.co2e_kg + "kg CO2e";
-            const topPct = 4 + i * (88 / zones.length);
+              ? (zone.co2e_kg/1000).toFixed(1) + "t CO₂e"
+              : zone.co2e_kg + "kg CO₂e";
             return (
               <div
                 key={z.id}
@@ -508,40 +475,80 @@ function CarView({ onZoneClick, selectedZone }) {
                 onMouseEnter={() => setHoveredZone(z.id)}
                 onMouseLeave={() => setHoveredZone(null)}
                 style={{
-                  position:"absolute",
-                  left: LABEL_X + "%",
-                  top: topPct + "%",
-                  width: LABEL_W + "%",
-                  pointerEvents:"all",
                   cursor:"pointer",
-                  background: active ? zone.color+"22" : "rgba(2,5,10,0.85)",
-                  border:"1px solid " + (active ? zone.color : zone.color+"55"),
+                  background: active ? zone.color+"22" : "rgba(4,8,16,0.0)",
+                  border:"1px solid " + (active ? zone.color : zone.color+"44"),
                   borderRadius:4,
-                  padding:"3px 6px",
-                  opacity: faded ? 0.2 : 1,
+                  padding:"3px 7px",
+                  opacity: faded ? 0.18 : 1,
                   transition:"all 0.15s",
+                  flexShrink:0,
                 }}
               >
                 <div style={{
                   fontSize:9, fontWeight:700, color:zone.color,
-                  fontFamily:"Space Grotesk, sans-serif",
+                  fontFamily:"'Space Grotesk',sans-serif",
                   whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
                 }}>
                   {isCatena ? "★ " + zone.name : zone.name}
                 </div>
-                <div style={{ fontSize:8, color:"#445566", fontFamily:"Space Grotesk, sans-serif" }}>
+                <div style={{ fontSize:8, color:"#445566", fontFamily:"'Space Grotesk',sans-serif" }}>
                   {co2Label}
                 </div>
               </div>
             );
           })}
         </div>
+
+        {/* PHOTO + SVG leader lines */}
+        <div style={{ flex:1, position:"relative", minWidth:0 }}>
+          <img
+            key={view}
+            src={VIEWS.find(v=>v.id===view).src}
+            alt={"BMW iX " + view}
+            style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
+          />
+
+          {/* SVG leader lines — coordinate system matches photo pixels via viewBox */}
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="xMidYMid slice"
+            style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", zIndex:2 }}
+          >
+            {zones.map((z, i) => {
+              const zone = ZONES.find(zn => zn.id === z.id);
+              if (!zone) return null;
+              const active = selectedZone === z.id || hoveredZone === z.id;
+              const faded  = selectedZone && selectedZone !== z.id && hoveredZone !== z.id;
+              // Label anchor on right edge of label column = left edge of photo = x:0 in SVG
+              // y evenly spaced matching label order
+              const lineY = 5 + i * (90 / zones.length) + (45 / zones.length);
+              return (
+                <g key={z.id}>
+                  {/* Elbow: horizontal from x:0 then diagonal to dot */}
+                  <polyline
+                    points={"0," + lineY + " 8," + lineY + " " + z.cx + "," + z.cy}
+                    fill="none"
+                    stroke={zone.color}
+                    strokeWidth={active ? 0.55 : 0.3}
+                    strokeDasharray={active ? "none" : "1.5,0.8"}
+                    opacity={faded ? 0.1 : active ? 1 : 0.5}
+                  />
+                  {/* Small dot at target */}
+                  <circle cx={z.cx} cy={z.cy} r={active ? 1.4 : 0.8}
+                    fill={zone.color} opacity={faded ? 0.1 : 0.85}
+                  />
+                </g>
+              );
+            })}
+          </svg>
+        </div>
       </div>
 
       {!selectedZone && (
         <div style={{
           textAlign:"center", padding:"4px 0", flexShrink:0,
-          fontSize:10, color:"#2a3a4a", fontFamily:"Space Grotesk, sans-serif",
+          fontSize:10, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif",
         }}>
           Click any label to explore carbon data
         </div>
