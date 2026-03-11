@@ -557,6 +557,25 @@ export default function App() {
   const handleZoneClick=useCallback((id)=>{setSelectedZone(prev=>prev===id?null:id);},[]);
   return(
     <div style={{ width:"100vw", height:"100vh", background:"#060a10", overflow:"hidden", position:"relative", fontFamily:"'Space Grotesk', sans-serif" }}>
+
+      {/* Mobile notice */}
+      <div className="bmw-mobile-notice" style={{
+        display:"none", position:"fixed", inset:0, zIndex:9999,
+        background:"#060a10", flexDirection:"column",
+        alignItems:"center", justifyContent:"center",
+        fontFamily:"'Space Grotesk', sans-serif", padding:32, textAlign:"center",
+      }}>
+        <div style={{ fontSize:48, marginBottom:24 }}>🖥️</div>
+        <div style={{ fontSize:20, fontWeight:700, color:"#e0eeff", marginBottom:12 }}>
+          Best on Desktop
+        </div>
+        <div style={{ fontSize:14, color:"#445566", lineHeight:1.6, maxWidth:280 }}>
+          This explorer is designed for desktop browsers. Please open on a laptop or desktop, or rotate your phone to landscape.
+        </div>
+        <div style={{ marginTop:24, fontSize:12, color:"#2a3a4a" }}>
+          bmw-ix-carbon-explorer.vercel.app
+        </div>
+      </div>
       <div style={{ position:"absolute", inset:0, opacity:0.03, backgroundImage:"linear-gradient(#4a90d9 1px, transparent 1px), linear-gradient(90deg, #4a90d9 1px, transparent 1px)", backgroundSize:"40px 40px" }} />
       <Header />
       <ZoneList selectedZone={selectedZone} onZoneClick={handleZoneClick} onZoneHover={setHoveredZone} />
