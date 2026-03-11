@@ -407,7 +407,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
           key={view}
           src={VIEWS.find(v=>v.id===view).src}
           alt={"BMW iX " + view}
-          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 60%", display:"block" }}
+          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center center", display:"block" }}
         />
 
         <svg
