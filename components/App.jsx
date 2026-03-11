@@ -248,94 +248,233 @@ function QualityLegend() {
 
 function CarView({ onZoneClick, selectedZone }) {
   const [hoveredZone, setHoveredZone] = useState(null);
+  const [view, setView] = useState("front");
+
+  const VIEWS = [
+    { id:"front", label:"Front",  src:"/images/bmw-ix-front.jpg" },
+    { id:"right", label:"Right",  src:"/images/bmw-ix-right.jpg" },
+    { id:"back",  label:"Back",   src:"/images/bmw-ix-back.jpg"  },
+    { id:"left",  label:"Left",   src:"/images/bmw-ix-left.jpg"  },
+    { id:"top",   label:"Top",    src:"/images/bmw-ix-top.jpg"   },
+  ];
+
+  // Dot positions per view — as percent of image width/height
+  // Adjust these once you see the real photos
+  const DOT_POSITIONS = {
+    front: {
+      kidney_grille: { x:52, y:52 },
+      front_motor:   { x:50, y:62 },
+      body:          { x:35, y:55 },
+      glazing:       { x:50, y:38 },
+      cfrp_roof:     { x:50, y:28 },
+      safety:        { x:38, y:48 },
+      electronics:   { x:55, y:42 },
+      wheels:        { x:22, y:72 },
+      brakes:        { x:23, y:68 },
+      suspension:    { x:24, y:64 },
+      charging:      { x:62, y:58 },
+      interior:      { x:48, y:44 },
+      thermal:       { x:58, y:55 },
+      polymers_misc: { x:42, y:60 },
+      battery:       { x:50, y:70 },
+      rear_motor:    { x:50, y:62 },
+    },
+    right: {
+      kidney_grille: { x:88, y:52 },
+      front_motor:   { x:82, y:60 },
+      rear_motor:    { x:18, y:60 },
+      body:          { x:50, y:55 },
+      glazing:       { x:50, y:36 },
+      cfrp_roof:     { x:45, y:26 },
+      safety:        { x:42, y:46 },
+      electronics:   { x:55, y:44 },
+      wheels:        { x:78, y:74 },
+      brakes:        { x:77, y:70 },
+      suspension:    { x:76, y:66 },
+      charging:      { x:14, y:54 },
+      interior:      { x:48, y:44 },
+      thermal:       { x:70, y:56 },
+      polymers_misc: { x:35, y:58 },
+      battery:       { x:50, y:72 },
+    },
+    back: {
+      kidney_grille: { x:50, y:52 },
+      rear_motor:    { x:50, y:62 },
+      body:          { x:65, y:55 },
+      glazing:       { x:50, y:38 },
+      cfrp_roof:     { x:50, y:28 },
+      safety:        { x:62, y:48 },
+      electronics:   { x:45, y:42 },
+      wheels:        { x:78, y:72 },
+      brakes:        { x:77, y:68 },
+      suspension:    { x:76, y:64 },
+      charging:      { x:38, y:58 },
+      interior:      { x:52, y:44 },
+      thermal:       { x:42, y:55 },
+      polymers_misc: { x:58, y:60 },
+      battery:       { x:50, y:70 },
+      front_motor:   { x:50, y:62 },
+    },
+    left: {
+      kidney_grille: { x:12, y:52 },
+      front_motor:   { x:18, y:60 },
+      rear_motor:    { x:82, y:60 },
+      body:          { x:50, y:55 },
+      glazing:       { x:50, y:36 },
+      cfrp_roof:     { x:55, y:26 },
+      safety:        { x:58, y:46 },
+      electronics:   { x:45, y:44 },
+      wheels:        { x:22, y:74 },
+      brakes:        { x:23, y:70 },
+      suspension:    { x:24, y:66 },
+      charging:      { x:86, y:54 },
+      interior:      { x:52, y:44 },
+      thermal:       { x:30, y:56 },
+      polymers_misc: { x:65, y:58 },
+      battery:       { x:50, y:72 },
+    },
+    top: {
+      kidney_grille: { x:50, y:18 },
+      front_motor:   { x:50, y:22 },
+      rear_motor:    { x:50, y:78 },
+      body:          { x:50, y:50 },
+      glazing:       { x:50, y:45 },
+      cfrp_roof:     { x:50, y:42 },
+      safety:        { x:38, y:48 },
+      electronics:   { x:60, y:46 },
+      wheels:        { x:28, y:22 },
+      brakes:        { x:29, y:23 },
+      suspension:    { x:30, y:25 },
+      charging:      { x:50, y:82 },
+      interior:      { x:50, y:52 },
+      thermal:       { x:62, y:35 },
+      polymers_misc: { x:38, y:60 },
+      battery:       { x:50, y:55 },
+    },
+  };
+
+  const currentDots = DOT_POSITIONS[view] || {};
+
   return (
     <div style={{
       position:"absolute", left:290, right:selectedZone?410:16, top:80, bottom:50,
+      display:"flex", flexDirection:"column",
     }}>
-      <div style={{ position:"relative", width:"100%", height:"100%" }}>
-        <iframe
-          title="2024 BMW iX"
-          src="https://sketchfab.com/models/b277d6b6109845ffb3cc5de325e71948/embed?autostart=1&ui_controls=0&ui_infos=0&ui_watermark=0&ui_watermark_link=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&preload=1&dnt=1"
-          style={{
-            position:"absolute", inset:0, width:"100%", height:"100%",
-            border:"none", borderRadius:8, background:"#060a10",
-          }}
-          allow="autoplay; fullscreen; xr-spatial-tracking"
-          allowFullScreen
-        />
-        <svg
-          viewBox="-250 -120 500 240"
-          style={{
-            position:"absolute", inset:0, width:"100%", height:"100%",
-            pointerEvents:"none",
-          }}
-        >
-          <defs>
-            <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
-            <filter id="glowStrong"><feGaussianBlur stdDeviation="6" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
-          </defs>
-          <g style={{pointerEvents:"all", cursor:"pointer"}}
-            onClick={()=>onZoneClick("kidney_grille")}
-            onMouseEnter={()=>setHoveredZone("kidney_grille")}
-            onMouseLeave={()=>setHoveredZone(null)}>
-            <circle cx={155} cy={10} r={hoveredZone==="kidney_grille"||selectedZone==="kidney_grille"?9:6}
-              fill="rgba(0,255,136,0.2)" stroke="#00ff88"
-              strokeWidth={selectedZone==="kidney_grille"?2.5:1.5}
-              filter="url(#glowStrong)" />
-            <line x1={155} y1={-2} x2={155} y2={-45} stroke="#00ff88" strokeWidth="0.8" strokeDasharray="2,2" />
-            <rect x={105} y={-68} width={100} height={24} rx={4} fill="rgba(0,15,8,0.9)" stroke="#00ff8844" strokeWidth="0.5" />
-            <text x={155} y={-56} textAnchor="middle" fill="#00ff88" fontSize="7" fontFamily="monospace" fontWeight="700" style={{pointerEvents:"none"}}>★ CATENA-X</text>
-            <text x={155} y={-48} textAnchor="middle" fill="#00ff8899" fontSize="5" fontFamily="monospace" style={{pointerEvents:"none"}}>Only verified footprint</text>
-          </g>
-          {[
-            {id:"battery",       x:-20,  y:60,  label:"BATTERY"},
-            {id:"body",          x:-30,  y:-20, label:"BODY"},
-            {id:"front_motor",   x:140,  y:20,  label:"FRONT MOTOR"},
-            {id:"rear_motor",    x:-155, y:20,  label:"REAR MOTOR"},
-            {id:"cfrp_roof",     x:20,   y:-80, label:"CARBON FIBRE ROOF"},
-            {id:"electronics",   x:30,   y:-40, label:"ELECTRONICS"},
-            {id:"interior",      x:-20,  y:-30, label:"INTERIOR"},
-            {id:"thermal",       x:100,  y:-10, label:"THERMAL"},
-            {id:"suspension",    x:-130, y:35,  label:"SUSPENSION"},
-            {id:"brakes",        x:120,  y:55,  label:"BRAKES"},
-            {id:"glazing",       x:50,   y:-65, label:"GLAZING"},
-            {id:"safety",        x:-60,  y:-45, label:"SAFETY"},
-            {id:"wheels",        x:125,  y:65,  label:"WHEELS"},
-            {id:"charging",      x:-165, y:10,  label:"CHARGING"},
-            {id:"polymers_misc", x:65,   y:20,  label:"POLYMERS"},
-          ].map(item => {
-            const zone = ZONES.find(z => z.id === item.id);
-            if (!zone) return null;
-            const isActive = selectedZone === item.id || hoveredZone === item.id;
-            return (
-              <g key={item.id} style={{cursor:"pointer", pointerEvents:"all"}}
-                onClick={()=>onZoneClick(item.id)}
-                onMouseEnter={()=>setHoveredZone(item.id)}
-                onMouseLeave={()=>setHoveredZone(null)}>
-                <circle cx={item.x} cy={item.y} r={isActive?7:4}
-                  fill={isActive?zone.color+"44":zone.color+"22"}
-                  stroke={zone.color} strokeWidth={isActive?1.5:0.8}
-                  filter={isActive?"url(#glow)":undefined} />
-                {isActive && (
-                  <text x={item.x} y={item.y-12} textAnchor="middle"
-                    fill={zone.color} fontSize="6" fontFamily="monospace" fontWeight="600"
-                    style={{pointerEvents:"none"}}>{item.label}</text>
-                )}
-              </g>
-            );
-          })}
-        </svg>
-        <div style={{
-          position:"absolute", bottom:8, right:8,
-          fontSize:9, color:"#334455", fontFamily:"'Space Grotesk',sans-serif",
-        }}>3D model: DisneyCars / Sketchfab (CC-BY)</div>
+
+      {/* View switcher */}
+      <div style={{
+        display:"flex", gap:6, padding:"8px 0 8px 0",
+        justifyContent:"center", flexShrink:0,
+      }}>
+        {VIEWS.map(v => (
+          <button key={v.id} onClick={()=>setView(v.id)} style={{
+            padding:"4px 14px", borderRadius:6, cursor:"pointer",
+            fontFamily:"'Space Grotesk',sans-serif", fontSize:11, fontWeight:600,
+            border:`1px solid ${view===v.id?"#4a9eff":"#1a2a3c"}`,
+            background: view===v.id?"rgba(74,158,255,0.15)":"rgba(8,12,21,0.8)",
+            color: view===v.id?"#4a9eff":"#556677",
+            transition:"all 0.15s",
+          }}>{v.label}</button>
+        ))}
       </div>
+
+      {/* Photo + dot overlay */}
+      <div style={{ position:"relative", flex:1, borderRadius:8, overflow:"hidden" }}>
+
+        {/* Photo */}
+        <img
+          src={VIEWS.find(v=>v.id===view).src}
+          alt={`BMW iX ${view} view`}
+          style={{
+            width:"100%", height:"100%", objectFit:"cover",
+            display:"block", borderRadius:8,
+          }}
+        />
+
+        {/* Dark overlay to make dots pop */}
+        <div style={{
+          position:"absolute", inset:0, borderRadius:8,
+          background:"rgba(0,0,0,0.35)",
+          pointerEvents:"none",
+        }} />
+
+        {/* Zone dots */}
+        {ZONES.map(zone => {
+          const pos = currentDots[zone.id];
+          if (!pos) return null;
+          const isActive = selectedZone === zone.id || hoveredZone === zone.id;
+          const isCatena = zone.id === "kidney_grille";
+          return (
+            <div
+              key={zone.id}
+              onClick={() => onZoneClick(zone.id)}
+              onMouseEnter={() => setHoveredZone(zone.id)}
+              onMouseLeave={() => setHoveredZone(null)}
+              style={{
+                position:"absolute",
+                left:`${pos.x}%`,
+                top:`${pos.y}%`,
+                transform:"translate(-50%,-50%)",
+                cursor:"pointer",
+                zIndex: isActive ? 20 : 10,
+              }}
+            >
+              {/* Dot */}
+              <div style={{
+                width: isCatena ? 14 : isActive ? 12 : 8,
+                height: isCatena ? 14 : isActive ? 12 : 8,
+                borderRadius:"50%",
+                background: isActive ? zone.color+"55" : zone.color+"33",
+                border:`${isCatena?2:1.5}px solid ${zone.color}`,
+                boxShadow: isCatena
+                  ? `0 0 14px ${zone.color}, 0 0 28px ${zone.color}44`
+                  : isActive ? `0 0 8px ${zone.color}88` : "none",
+                transition:"all 0.15s",
+              }} />
+
+              {/* Label */}
+              {(isActive || isCatena) && (
+                <div style={{
+                  position:"absolute",
+                  left:"50%",
+                  bottom:"calc(100% + 8px)",
+                  transform:"translateX(-50%)",
+                  whiteSpace:"nowrap",
+                  background:"rgba(4,8,16,0.95)",
+                  border:`1px solid ${zone.color}66`,
+                  borderRadius:4,
+                  padding:"3px 8px",
+                  fontSize: isCatena ? 10 : 9,
+                  fontWeight:600,
+                  color: zone.color,
+                  fontFamily:"'Space Grotesk',sans-serif",
+                  pointerEvents:"none",
+                  boxShadow: isCatena ? `0 0 12px ${zone.color}33` : "none",
+                }}>
+                  {isCatena ? "★ CATENA-X · Only verified footprint" : zone.name}
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {/* Credit */}
+        <div style={{
+          position:"absolute", bottom:8, right:10,
+          fontSize:9, color:"#334455",
+          fontFamily:"'Space Grotesk',sans-serif",
+        }}>BMW iX xDrive45</div>
+      </div>
+
       {!selectedZone && (
         <div style={{
-          position:"absolute", bottom:16, left:"50%", transform:"translateX(-50%)",
-          fontSize:11, color:"#445566", fontFamily:"'Space Grotesk',sans-serif",
-          textAlign:"center", pointerEvents:"none",
-        }}>Rotate the car freely · Click any dot to explore carbon data</div>
+          textAlign:"center", padding:"6px 0",
+          fontSize:11, color:"#334455",
+          fontFamily:"'Space Grotesk',sans-serif",
+          flexShrink:0,
+        }}>
+          Switch views · Click any dot to explore carbon data
+        </div>
       )}
     </div>
   );
