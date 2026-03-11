@@ -421,11 +421,15 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
             const isCatena = z.id === "kidney_grille";
 
             // Tooltip: default above dot, flip below if dot is in top 25%
-            const tipAbove = z.cy > 25;
             const tipH = 7;
             const tipW = 26;
-            const tipX = Math.min(Math.max(z.cx - tipW/2, 1), 100 - tipW - 1);
-            const tipY = tipAbove ? z.cy - tipH - 5 : z.cy + 5;
+            // Prefer above dot, flip below if too close to top
+            const wantsAbove = z.cy > 20;
+            const rawTipY = wantsAbove ? z.cy - tipH - 5 : z.cy + 5;
+            const tipAbove = wantsAbove && rawTipY > 0.5;
+            const tipY = tipAbove ? Math.max(rawTipY, 0.5) : Math.min(rawTipY, 100 - tipH - 0.5);
+            // Keep card horizontally inside photo
+            const tipX = Math.min(Math.max(z.cx - tipW/2, 0.5), 100 - tipW - 0.5);
             const stemY1 = tipAbove ? tipY + tipH : tipY;
             const stemY2 = tipAbove ? z.cy - 2 : z.cy + 2;
 
