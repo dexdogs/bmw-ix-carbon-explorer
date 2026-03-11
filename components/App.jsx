@@ -144,7 +144,7 @@ function DataPanel({ zone, onClose }) {
   if (!z) return null;
   const isCatenaX = z.id === "kidney_grille";
   return (
-    <div style={{ position:"absolute", right:16, top:80, bottom:16, width:380, background:"rgba(8,12,21,0.95)", borderRadius:12, border:`1px solid ${isCatenaX?"#00ff88":"#1a3a5c"}`, padding:20, overflowY:"auto", zIndex:10, boxShadow:isCatenaX?"0 0 30px rgba(0,255,136,0.15)":"0 0 20px rgba(0,0,0,0.5)", fontFamily:"'Space Grotesk', sans-serif" }}>
+    <div className="bmw-datapanel" style={{ position:"absolute", right:16, top:80, bottom:16, width:380, background:"rgba(8,12,21,0.95)", borderRadius:12, border:`1px solid ${isCatenaX?"#00ff88":"#1a3a5c"}`, padding:20, overflowY:"auto", zIndex:10, boxShadow:isCatenaX?"0 0 30px rgba(0,255,136,0.15)":"0 0 20px rgba(0,0,0,0.5)", fontFamily:"'Space Grotesk', sans-serif" }}>
       <button onClick={onClose} style={{ position:"absolute", top:12, right:12, background:"none", border:"none", color:"#556", fontSize:18, cursor:"pointer", padding:4 }}>✕</button>
       {isCatenaX && <div style={{ background:"rgba(0,255,136,0.08)", border:"1px solid #00ff8844", borderRadius:6, padding:"8px 12px", marginBottom:12, fontSize:10, color:"#00ff88", letterSpacing:1, textTransform:"uppercase", fontWeight:700 }}>★ Catena-X Verified Data Point</div>}
       <div style={{ fontSize:15, fontWeight:700, color:z.color, marginBottom:4 }}>{z.name}</div>
@@ -276,7 +276,7 @@ function FeedbackButton() {
 function ZoneList({ selectedZone, onZoneClick, onZoneHover }) {
   const sorted = [...ZONES].sort((a,b)=>b.co2e_kg-a.co2e_kg);
   return (
-    <div style={{ position:"absolute", left:16, top:80, bottom:16, width:260, background:"rgba(8,12,21,0.92)", borderRadius:12, border:"1px solid #1a2a3c", padding:12, overflowY:"auto", zIndex:10, fontFamily:"'Space Grotesk', sans-serif" }}>
+    <div className="bmw-zonelist" style={{ position:"absolute", left:16, top:80, bottom:16, width:260, background:"rgba(8,12,21,0.92)", borderRadius:12, border:"1px solid #1a2a3c", padding:12, overflowY:"auto", zIndex:10, fontFamily:"'Space Grotesk', sans-serif" }}>
       <div style={{ fontSize:10, color:"#556677", letterSpacing:1.5, marginBottom:10, fontWeight:700, textTransform:"uppercase" }}>Vehicle Zones — by CO₂ equivalent</div>
       {sorted.map(z=>(
         <div key={z.id} onClick={()=>onZoneClick(z.id)} onMouseEnter={()=>onZoneHover&&onZoneHover(z.id)} onMouseLeave={()=>onZoneHover&&onZoneHover(null)} style={{ padding:"7px 8px", borderRadius:6, marginBottom:3, cursor:"pointer", background:selectedZone===z.id?"rgba(255,255,255,0.08)":"transparent", border:selectedZone===z.id?`1px solid ${z.color}44`:"1px solid transparent", transition:"all 0.15s" }}>
@@ -298,7 +298,7 @@ function ZoneList({ selectedZone, onZoneClick, onZoneHover }) {
 
 function Header() {
   return (
-    <div style={{ position:"absolute", top:0, left:0, right:0, height:72, zIndex:20, background:"rgba(8,12,21,0.95)", borderBottom:"1px solid #1a2a3c", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 24px", fontFamily:"'Space Grotesk', sans-serif" }}>
+    <div className="bmw-header" style={{ position:"absolute", top:0, left:0, right:0, height:72, zIndex:20, background:"rgba(8,12,21,0.95)", borderBottom:"1px solid #1a2a3c", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 24px", fontFamily:"'Space Grotesk', sans-serif" }}>
       <div>
         <div style={{ fontSize:16, fontWeight:700, color:"#e0e6ed", letterSpacing:0.5 }}>Car's Carbon Complexities // dexdogs</div>
         <div style={{ fontSize:10, color:"#556677", marginTop:2 }}>Source: BMW Vehicle Footprint Report · TÜV Rheinland verified · ISO 14040/44</div>
@@ -326,7 +326,7 @@ function Header() {
 
 function QualityLegend() {
   return (
-    <div style={{ position:"absolute", bottom:16, left:"50%", transform:"translateX(-50%)", zIndex:20, display:"flex", gap:10, alignItems:"center", background:"rgba(8,12,21,0.9)", borderRadius:8, padding:"8px 14px", border:"1px solid #1a2a3c", fontFamily:"'Space Grotesk', sans-serif", flexWrap:"wrap", maxWidth:"90vw" }}>
+    <div className="bmw-legend" style={{ position:"absolute", bottom:16, left:"50%", transform:"translateX(-50%)", zIndex:20, display:"flex", gap:10, alignItems:"center", background:"rgba(8,12,21,0.9)", borderRadius:8, padding:"8px 14px", border:"1px solid #1a2a3c", fontFamily:"'Space Grotesk', sans-serif", flexWrap:"wrap", maxWidth:"90vw" }}>
       <span style={{ fontSize:8, color:"#556677", textTransform:"uppercase", letterSpacing:1, fontWeight:700 }}>Data Quality:</span>
       {QUALITY_LEGEND.map((q,i)=>(
         <div key={i} style={{ display:"flex", alignItems:"center", gap:4 }}>
@@ -383,7 +383,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
   const hovered = activeZone || externalHover || selectedZone;
 
   return (
-    <div style={{
+    <div className="bmw-carview" style={{
       position:"absolute", left:290, right:selectedZone?410:16, top:80, bottom:50,
       display:"flex", flexDirection:"column", background:"#000",
     }}>
@@ -523,7 +523,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
 
 function InfoPanel({ selectedZone }) {
   return(
-    <div style={{ position:"absolute", top:130, right:selectedZone?412:18, width:340, maxHeight:"calc(100vh - 160px)", overflowY:"auto", zIndex:25, background:"rgba(8,12,21,0.97)", border:"1px solid #00ff8833", borderRadius:12, padding:20, fontFamily:"'Space Grotesk', sans-serif" }}>
+    <div className="bmw-infopanel" style={{ position:"absolute", top:130, right:selectedZone?412:18, width:340, maxHeight:"calc(100vh - 160px)", overflowY:"auto", zIndex:25, background:"rgba(8,12,21,0.97)", border:"1px solid #00ff8833", borderRadius:12, padding:20, fontFamily:"'Space Grotesk', sans-serif" }}>
       <div style={{ fontSize:12, color:"#00ff88", fontWeight:700, letterSpacing:1, marginBottom:16, textTransform:"uppercase" }}>About this dataset</div>
       {INFO_SECTIONS.map((s,i)=>(
         <div key={i} style={{ marginBottom:18 }}>
@@ -563,7 +563,7 @@ export default function App() {
       <CarView onZoneClick={handleZoneClick} selectedZone={selectedZone} hoveredZone={hoveredZone} />
       <DataPanel zone={selectedZone} onClose={()=>setSelectedZone(null)} />
       <QualityLegend />
-      <div style={{ position:"absolute", top:82, right:selectedZone?412:18, zIndex:30 }}>
+      <div className="bmw-buttons" style={{ position:"absolute", top:82, right:selectedZone?412:18, zIndex:30 }}>
         <button onClick={()=>setShowInfo(v=>!v)} style={{ width:36, height:36, borderRadius:8, border:`1px solid ${showInfo?"#00ff88":"#1a2a3c"}`, background:showInfo?"rgba(0,255,136,0.1)":"rgba(8,12,21,0.9)", color:showInfo?"#00ff88":"#556677", cursor:"pointer", fontSize:16 }} title="Dataset info & glossary">ⓘ</button>
       <a href="/BMW_iX_PCR_PCF_Dataset_Phase1.xlsx" download="BMW_iX_PCR_PCF_Dataset_Phase1.xlsx" style={{ width:36, height:36, borderRadius:8, border:"1px solid #1a2a3c", background:"rgba(8,12,21,0.9)", color:"#556677", cursor:"pointer", fontSize:9, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", textDecoration:"none", fontFamily:"'Space Grotesk',sans-serif" }} title="Export dataset">Export</a>
       <FeedbackButton />
