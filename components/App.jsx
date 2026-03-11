@@ -340,84 +340,47 @@ function QualityLegend() {
 }
 
 function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
-  const [view, setView] = useState("front");
   const [localHover, setLocalHover] = useState(null);
   const hoveredZone = localHover || externalHover;
+  const [view, setView] = useState("front_angle");
 
   const VIEWS = [
-    { id:"front", label:"Front", src:"/images/bmw-ix-front.jpg" },
-    { id:"right", label:"Right", src:"/images/bmw-ix-right.jpg" },
-    { id:"left",  label:"Left",  src:"/images/bmw-ix-left.jpg"  },
-    { id:"back",  label:"Back",  src:"/images/bmw-ix-back.jpg"  },
-    { id:"top",   label:"Top",   src:"/images/bmw-ix-top.jpg"   },
+    { id:"front_angle", label:"Front", src:"/images/bmw-ix-front-angle.jpg" },
+    { id:"back_angle",  label:"Rear",  src:"/images/bmw-ix-back-angle.jpg"  },
   ];
 
+  // cx/cy as % of photo — calibrated to actual angled shot positions
   const VIEW_ZONES = {
-    front: [
-      { id:"cfrp_roof",     cx:50,  cy:30 },
-      { id:"glazing",       cx:50,  cy:37 },
-      { id:"electronics",   cx:32,  cy:53 },
-      { id:"kidney_grille", cx:50,  cy:57 },
-      { id:"body",          cx:28,  cy:58 },
-      { id:"safety",        cx:36,  cy:62 },
-      { id:"front_motor",   cx:50,  cy:68 },
-      { id:"suspension",    cx:25,  cy:70 },
-      { id:"polymers_misc", cx:50,  cy:72 },
-      { id:"brakes",        cx:24,  cy:74 },
-      { id:"battery",       cx:50,  cy:76 },
-      { id:"wheels",        cx:24,  cy:78 },
-    ],
-    right: [
-      { id:"cfrp_roof",     cx:44,  cy:34 },
-      { id:"glazing",       cx:47,  cy:42 },
-      { id:"interior",      cx:45,  cy:48 },
-      { id:"body",          cx:50,  cy:54 },
-      { id:"electronics",   cx:10,  cy:55 },
-      { id:"front_motor",   cx:17,  cy:62 },
-      { id:"rear_motor",    cx:82,  cy:62 },
-      { id:"suspension",    cx:20,  cy:64 },
-      { id:"polymers_misc", cx:50,  cy:66 },
-      { id:"brakes",        cx:21,  cy:68 },
-      { id:"wheels",        cx:21,  cy:72 },
-      { id:"battery",       cx:50,  cy:73 },
-    ],
-    left: [
-      { id:"cfrp_roof",     cx:55,  cy:34 },
-      { id:"glazing",       cx:52,  cy:42 },
-      { id:"interior",      cx:54,  cy:48 },
-      { id:"body",          cx:50,  cy:54 },
-      { id:"charging",      cx:22,  cy:58 },
-      { id:"rear_motor",    cx:18,  cy:62 },
-      { id:"front_motor",   cx:83,  cy:62 },
-      { id:"suspension",    cx:80,  cy:64 },
-      { id:"polymers_misc", cx:50,  cy:66 },
-      { id:"brakes",        cx:79,  cy:68 },
-      { id:"wheels",        cx:79,  cy:72 },
-      { id:"battery",       cx:50,  cy:73 },
-    ],
-    back: [
-      { id:"cfrp_roof",     cx:50,  cy:31 },
-      { id:"glazing",       cx:50,  cy:41 },
+    front_angle: [
+      { id:"cfrp_roof",     cx:58,  cy:28 },
+      { id:"glazing",       cx:62,  cy:35 },
+      { id:"interior",      cx:65,  cy:42 },
+      { id:"body",          cx:72,  cy:52 },
+      { id:"kidney_grille", cx:30,  cy:58 },
       { id:"electronics",   cx:28,  cy:52 },
-      { id:"safety",        cx:50,  cy:60 },
-      { id:"body",          cx:68,  cy:57 },
-      { id:"rear_motor",    cx:50,  cy:66 },
-      { id:"polymers_misc", cx:50,  cy:71 },
-      { id:"suspension",    cx:27,  cy:70 },
-      { id:"brakes",        cx:28,  cy:74 },
-      { id:"battery",       cx:50,  cy:76 },
-      { id:"wheels",        cx:28,  cy:78 },
+      { id:"front_motor",   cx:32,  cy:72 },
+      { id:"suspension",    cx:35,  cy:76 },
+      { id:"brakes",        cx:38,  cy:79 },
+      { id:"wheels",        cx:32,  cy:82 },
+      { id:"battery",       cx:55,  cy:78 },
+      { id:"polymers_misc", cx:50,  cy:68 },
+      { id:"safety",        cx:24,  cy:62 },
+      { id:"thermal",       cx:40,  cy:64 },
     ],
-    top: [
-      { id:"front_motor",   cx:50,  cy:22 },
-      { id:"wheels",        cx:24,  cy:26 },
-      { id:"suspension",    cx:24,  cy:30 },
-      { id:"glazing",       cx:42,  cy:48 },
-      { id:"body",          cx:26,  cy:50 },
-      { id:"cfrp_roof",     cx:60,  cy:51 },
-      { id:"interior",      cx:42,  cy:53 },
-      { id:"battery",       cx:50,  cy:55 },
-      { id:"rear_motor",    cx:50,  cy:77 },
+    back_angle: [
+      { id:"cfrp_roof",     cx:42,  cy:26 },
+      { id:"glazing",       cx:38,  cy:34 },
+      { id:"interior",      cx:45,  cy:40 },
+      { id:"body",          cx:30,  cy:52 },
+      { id:"rear_motor",    cx:22,  cy:72 },
+      { id:"suspension",    cx:25,  cy:76 },
+      { id:"brakes",        cx:28,  cy:79 },
+      { id:"wheels",        cx:22,  cy:83 },
+      { id:"battery",       cx:45,  cy:78 },
+      { id:"polymers_misc", cx:40,  cy:66 },
+      { id:"charging",      cx:18,  cy:62 },
+      { id:"safety",        cx:35,  cy:58 },
+      { id:"thermal",       cx:50,  cy:60 },
     ],
   };
 
@@ -428,12 +391,12 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
       position:"absolute", left:290, right:selectedZone?410:16, top:80, bottom:50,
       display:"flex", flexDirection:"column", background:"#000",
     }}>
-      {/* View switcher */}
-      <div style={{ display:"flex", gap:6, padding:"6px 12px", justifyContent:"center", flexShrink:0 }}>
+      {/* View switcher — just 2 buttons */}
+      <div style={{ display:"flex", gap:8, padding:"6px 12px", justifyContent:"center", flexShrink:0 }}>
         {VIEWS.map(v => (
           <button key={v.id} onClick={()=>setView(v.id)} style={{
-            padding:"3px 14px", borderRadius:6, cursor:"pointer",
-            fontFamily:"'Space Grotesk',sans-serif", fontSize:11, fontWeight:600,
+            padding:"4px 28px", borderRadius:6, cursor:"pointer",
+            fontFamily:"'Space Grotesk',sans-serif", fontSize:12, fontWeight:600,
             border:`1px solid ${view===v.id?"#4a9eff":"#1a2a3c"}`,
             background: view===v.id?"rgba(74,158,255,0.15)":"transparent",
             color: view===v.id?"#4a9eff":"#445566",
@@ -442,7 +405,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
         ))}
       </div>
 
-      {/* Photo fills all remaining space — leaders drawn on top, NO label column */}
+      {/* Photo fills all remaining space */}
       <div style={{ flex:1, position:"relative", minHeight:0 }}>
         <img
           key={view}
@@ -451,50 +414,82 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
           style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
         />
 
-        {/* SVG: leader lines + target dots only. No labels here. */}
+        {/* SVG overlay — dots + active tooltip only */}
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="xMidYMid slice"
-          style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", zIndex:2 }}
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"all", zIndex:2 }}
         >
           {zones.map((z) => {
             const zone = ZONES.find(zn => zn.id === z.id);
             if (!zone) return null;
-            const active = selectedZone === z.id || hoveredZone === z.id;
-            const faded  = selectedZone && selectedZone !== z.id && hoveredZone !== z.id;
-            if (!active && !faded && selectedZone) return null;
+            const active  = selectedZone === z.id || hoveredZone === z.id;
+            const faded   = (selectedZone || hoveredZone) && !active;
+            const isCatena = z.id === "kidney_grille";
+            const co2Label = zone.co2e_kg >= 1000
+              ? (zone.co2e_kg/1000).toFixed(1) + "t CO₂e"
+              : zone.co2e_kg + "kg CO₂e";
+
+            // Tooltip: position above dot, flip if too high
+            const tipY = z.cy > 20 ? z.cy - 14 : z.cy + 5;
+            const tipX = Math.min(Math.max(z.cx, 20), 78);
+
             return (
-              <g key={z.id}>
+              <g key={z.id}
+                onClick={() => onZoneClick(z.id)}
+                onMouseEnter={() => setLocalHover(z.id)}
+                onMouseLeave={() => setLocalHover(null)}
+                style={{ cursor:"pointer" }}
+              >
+                {/* Pulse ring when active */}
                 {active && (
-                  <>
-                    <line
-                      x1={z.cx} y1={z.cy - 2}
-                      x2={z.cx} y2={z.cy - 8}
-                      stroke={zone.color} strokeWidth="0.5" opacity="0.8"
-                    />
-                    <rect
-                      x={z.cx - 18} y={z.cy - 18}
-                      width={36} height={9} rx={1.5}
-                      fill="rgba(2,5,10,0.92)"
-                      stroke={zone.color} strokeWidth="0.4"
-                    />
-                    <text
-                      x={z.cx} y={z.cy - 11}
-                      textAnchor="middle"
-                      fill={zone.color} fontSize="3"
-                      fontFamily="Space Grotesk, sans-serif"
-                      fontWeight="600"
-                    >{zone.name}</text>
-                  </>
+                  <circle cx={z.cx} cy={z.cy} r={5}
+                    fill={zone.color} fillOpacity={0.15}
+                    stroke={zone.color} strokeWidth={0.4} strokeOpacity={0.6}
+                  />
                 )}
+                {/* Catena-X extra ring */}
+                {isCatena && (
+                  <circle cx={z.cx} cy={z.cy} r={6}
+                    fill="none" stroke={zone.color} strokeWidth={0.4}
+                    strokeDasharray="1,1" opacity={0.5}
+                  />
+                )}
+                {/* Main dot */}
                 <circle
                   cx={z.cx} cy={z.cy}
-                  r={active ? 2 : 1.2}
+                  r={active ? 2.2 : 1.4}
                   fill={zone.color}
-                  opacity={faded ? 0.15 : active ? 1 : 0.7}
-                  stroke={active ? "white" : "none"}
-                  strokeWidth="0.3"
+                  opacity={faded ? 0.12 : active ? 1 : 0.75}
+                  stroke={active ? "rgba(255,255,255,0.6)" : "none"}
+                  strokeWidth={0.4}
                 />
+                {/* Tooltip — shown on hover/select */}
+                {active && (
+                  <g>
+                    <rect
+                      x={tipX - 20} y={tipY}
+                      width={40} height={11} rx={2}
+                      fill="rgba(2,5,12,0.95)"
+                      stroke={zone.color} strokeWidth={0.4}
+                    />
+                    {/* Stem line from tooltip to dot */}
+                    <line
+                      x1={tipX} y1={tipY + 11}
+                      x2={z.cx} y2={z.cy - 2.5}
+                      stroke={zone.color} strokeWidth={0.35} opacity={0.7}
+                    />
+                    <text x={tipX} y={tipY + 4.5}
+                      textAnchor="middle" fill={zone.color}
+                      fontSize="3" fontWeight="700"
+                      fontFamily="Space Grotesk, sans-serif"
+                    >{isCatena ? "★ " + zone.name : zone.name}</text>
+                    <text x={tipX} y={tipY + 9}
+                      textAnchor="middle" fill="#556677"
+                      fontSize="2.4" fontFamily="Space Grotesk, sans-serif"
+                    >{co2Label}</text>
+                  </g>
+                )}
               </g>
             );
           })}
@@ -505,7 +500,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
         textAlign:"center", padding:"4px 0", flexShrink:0,
         fontSize:10, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif",
       }}>
-        Hover a zone in the left panel · click to explore carbon data
+        Hover a zone in the panel left · or hover dots on photo · click to explore
       </div>
     </div>
   );
