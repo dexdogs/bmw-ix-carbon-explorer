@@ -422,8 +422,8 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
 
             // Tooltip: default above dot, flip below if dot is in top 25%
             const tipAbove = z.cy > 25;
-            const tipH = 13;
-            const tipW = 38;
+            const tipH = 8;
+            const tipW = 22;
             const tipX = Math.min(Math.max(z.cx - tipW/2, 1), 100 - tipW - 1);
             const tipY = tipAbove ? z.cy - tipH - 5 : z.cy + 5;
             const stemY1 = tipAbove ? tipY + tipH : tipY;
@@ -467,7 +467,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
                     <line
                       x1={z.cx} y1={stemY1}
                       x2={z.cx} y2={stemY2}
-                      stroke={z.color} strokeWidth={0.4} opacity={0.7}
+                      stroke={z.color} strokeWidth={0.2} opacity={0.7}
                     />
                     {/* Card background */}
                     <rect
@@ -475,20 +475,20 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
                       width={tipW} height={tipH}
                       rx={1.8}
                       fill="rgba(2,5,12,0.96)"
-                      stroke={z.color} strokeWidth={0.45}
+                      stroke={z.color} strokeWidth={0.25}
                     />
                     {/* Zone name */}
                     <text
                       x={tipX + tipW/2} y={tipY + 5}
                       textAnchor="middle"
-                      fill={z.color} fontSize="3.2" fontWeight="700"
+                      fill={z.color} fontSize="1.9" fontWeight="700"
                       fontFamily="Space Grotesk, sans-serif"
                     >{z.label}</text>
                     {/* CO2 sub */}
                     <text
                       x={tipX + tipW/2} y={tipY + 10}
                       textAnchor="middle"
-                      fill="#556677" fontSize="2.6"
+                      fill="#556677" fontSize="1.6"
                       fontFamily="Space Grotesk, sans-serif"
                     >{z.sub}</text>
                   </g>
