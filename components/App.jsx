@@ -402,12 +402,12 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
       </div>
 
       {/* Photo — full width, SVG dots + popups on top */}
-      <div style={{ flex:1, position:"relative", minHeight:0 }}>
+      <div style={{ flex:1, position:"relative", minHeight:0, maxHeight:"100%", aspectRatio:"unset" }}>
         <img
           key={view}
           src={VIEWS.find(v=>v.id===view).src}
           alt={"BMW iX " + view}
-          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
+          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center center", display:"block" }}
         />
 
         <svg
