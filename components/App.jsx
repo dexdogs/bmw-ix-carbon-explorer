@@ -352,10 +352,10 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
   // Cards defined per view: label shown in card, arrow tip at cx/cy on photo
   const VIEW_ZONES = {
     front_angle: [
-      { id:"kidney_grille", cx:28,  cy:58, label:"Kidney Grille", sub:"★ Catena-X Verified · 8kg CO₂e",  color:"#00ff88" },
-      { id:"electronics",   cx:21,  cy:52, label:"Headlights & Electronics", sub:"1.0t CO₂e",            color:"#e67e22" },
-      { id:"body",          cx:44,  cy:44, label:"Hood & Body Structure",    sub:"5.7t CO₂e",             color:"#95a5a6" },
-      { id:"glazing",       cx:55,  cy:38, label:"Windshield & Glazing",     sub:"97kg CO₂e",             color:"#bdc3c7" },
+      { id:"kidney_grille", cx:24,  cy:58, label:"Kidney Grille", sub:"★ Catena-X Verified · 8kg CO₂e",  color:"#00ff88" },
+      { id:"electronics",   cx:31,  cy:50, label:"Headlights & Electronics", sub:"1.0t CO₂e",            color:"#e67e22" },
+      { id:"body",          cx:39,  cy:46, label:"Hood & Body Structure",    sub:"5.7t CO₂e",             color:"#95a5a6" },
+      { id:"glazing",       cx:45,  cy:38, label:"Windshield & Glazing",     sub:"97kg CO₂e",             color:"#bdc3c7" },
       { id:"cfrp_roof",     cx:64,  cy:31.5, label:"CFRP Roof Panel",          sub:"375kg CO₂e",            color:"#8e44ad" },
       { id:"interior",      cx:52,  cy:39, label:"Interior & Trim",          sub:"749kg CO₂e",            color:"#1abc9c" },
       { id:"front_motor",   cx:26,  cy:72, label:"Front Motor + Inverter",   sub:"742kg CO₂e",            color:"#3498db" },
