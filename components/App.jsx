@@ -341,183 +341,519 @@ function QualityLegend() {
 
 function CarView({ onZoneClick, selectedZone }) {
   const [hoveredZone, setHoveredZone] = useState(null);
-  const [view, setView] = useState("front");
+  const [view, setView] = useState("side");
 
   const VIEWS = [
-    { id:"front", label:"Front", src:"/images/bmw-ix-front.jpg" },
-    { id:"right", label:"Right", src:"/images/bmw-ix-right.jpg" },
-    { id:"left",  label:"Left",  src:"/images/bmw-ix-left.jpg"  },
-    { id:"back",  label:"Back",  src:"/images/bmw-ix-back.jpg"  },
-    { id:"top",   label:"Top",   src:"/images/bmw-ix-top.jpg"   },
+    { id:"side",  label:"Side"  },
+    { id:"front", label:"Front" },
+    { id:"back",  label:"Back"  },
+    { id:"top",   label:"Top"   },
   ];
 
-  // Photos are square 1080x1080, displayed with objectFit:cover filling container
-  // All dots are % of the rendered container dimensions
-  // Only zones physically visible in each photo are included
+  const isActive = (id) => selectedZone === id || hoveredZone === id;
+  const isCatena = (id) => id === "kidney_grille";
 
-  const DOT_POSITIONS = {
-    front: {
-      // Kidney grille: large black panel dead center
-      kidney_grille: {x:50, y:57},
-      // Front motor: behind grille, low
-      front_motor:   {x:50, y:65},
-      // Hood: red panel above grille, center
-      hood:          {x:50, y:46},
-      // Windshield: dark glass upper center
-      glazing:       {x:50, y:38},
-      // CFRP roof: top strip of car
-      cfrp_roof:     {x:50, y:32},
-      // Left headlight — maps to electronics zone
-      electronics:   {x:34, y:54},
-      // Front bumper lower center
-      polymers_misc: {x:50, y:71},
-      // Body left panel
-      body:          {x:31, y:61},
-      // Left front wheel bottom left
-      wheels:        {x:27, y:79},
-      // Left front brake
-      brakes:        {x:27, y:76},
-      // Left front suspension
-      suspension:    {x:27, y:73},
-      // Battery underfloor center
-      battery:       {x:50, y:76},
-    },
-    // RIGHT side photo: front of car is on LEFT side of image
-    right: {
-      body:           {x:50, y:56},
-      glazing:        {x:47, y:43},
-      cfrp_roof:      {x:45, y:36},
-      interior:       {x:46, y:49},
-      wheels:         {x:22, y:71},
-      brakes:         {x:22, y:68},
-      suspension:     {x:21, y:65},
-      rear_motor:     {x:80, y:61},
-      front_motor:    {x:18, y:63},
-      polymers_misc:  {x:50, y:67},
-      battery:        {x:50, y:72},
-      electronics:    {x:11, y:56},
-    },
-    // LEFT side photo: front of car is on RIGHT side of image
-    left: {
-      body:           {x:50, y:56},
-      glazing:        {x:52, y:43},
-      cfrp_roof:      {x:54, y:36},
-      interior:       {x:53, y:49},
-      wheels:         {x:78, y:71},
-      brakes:         {x:78, y:68},
-      suspension:     {x:79, y:65},
-      rear_motor:     {x:20, y:61},
-      front_motor:    {x:82, y:63},
-      polymers_misc:  {x:50, y:67},
-      battery:        {x:50, y:72},
-      electronics:    {x:89, y:56},
-      charging:       {x:23, y:59},
-    },
-    back: {
-      taillights:     {x:50, y:53},
-      glazing:        {x:50, y:41},
-      cfrp_roof:      {x:50, y:32},
-      trunk:          {x:50, y:58},
-      polymers_misc:  {x:50, y:70},
-      body:           {x:66, y:59},
-      rear_motor:     {x:50, y:66},
-      battery:        {x:50, y:76},
-      wheels:         {x:29, y:79},
-      brakes:         {x:29, y:76},
-      suspension:     {x:28, y:73},
-    },
-    top: {
-      // Top photo: front of car at TOP-LEFT, rear at BOTTOM-RIGHT, car tilted ~15deg
-      hood:           {x:30, y:27},
-      glazing:        {x:37, y:37},
-      cfrp_roof:      {x:60, y:51},
-      interior:       {x:44, y:46},
-      body:           {x:27, y:49},
-      trunk:          {x:70, y:58},
-      wheels:         {x:24, y:68},
-      battery:        {x:50, y:53},
-    },
-  };
+  const dotProps = (id) => ({
+    onClick: () => onZoneClick(id),
+    onMouseEnter: () => setHoveredZone(id),
+    onMouseLeave: () => setHoveredZone(null),
+    style: { cursor: "pointer" },
+  });
 
-  // Extra dot definitions not in main ZONES array
-  const EXTRA_DOTS = {
-    hood:       { name:"Hood / Front Closures",  color:"#88aacc" },
-    taillights: { name:"Taillights",             color:"#ff6644" },
-    trunk:      { name:"Trunk / Rear Closure",   color:"#aa88cc" },
-    charging:   { name:"Charging Port",          color:"#44ccaa" },
-  };
-
-  // Map extra dot IDs to nearest clickable ZONE id
-  const EXTRA_TO_ZONE = {
-    hood:       "body",
-    taillights: "rear_motor",
-    trunk:      "body",
-    charging:   "charging",
-  };
-
-  const currentDots = DOT_POSITIONS[view] || {};
-
-  const renderDot = (dotId, pos) => {
-    const zone = ZONES.find(z => z.id === dotId);
-    const extra = EXTRA_DOTS[dotId];
-    const displayData = zone || extra;
-    if (!displayData) return null;
-
-    // Clickable zone id: direct if in ZONES, mapped if extra
-    const clickId = zone ? dotId : EXTRA_TO_ZONE[dotId];
-    const isActive = selectedZone === clickId || hoveredZone === dotId;
-    const isCatena = dotId === "kidney_grille";
-
+  const Dot = ({ id, cx, cy }) => {
+    const zone = ZONES.find(z => z.id === id);
+    if (!zone) return null;
+    const active = isActive(id);
+    const catena = isCatena(id);
+    const r = catena ? 7 : active ? 6 : 4;
     return (
-      <div
-        key={dotId}
-        onClick={() => { if (clickId) onZoneClick(clickId); }}
-        onMouseEnter={() => setHoveredZone(dotId)}
-        onMouseLeave={() => setHoveredZone(null)}
-        style={{
-          position:"absolute",
-          left:`${pos.x}%`,
-          top:`${pos.y}%`,
-          transform:"translate(-50%,-50%)",
-          cursor:"pointer",
-          zIndex: isActive ? 20 : 10,
-        }}
-      >
-        <div style={{
-          width: isCatena ? 14 : isActive ? 12 : 8,
-          height: isCatena ? 14 : isActive ? 12 : 8,
-          borderRadius:"50%",
-          background: isActive ? displayData.color+"55" : displayData.color+"33",
-          border:`${isCatena?2:1.5}px solid ${displayData.color}`,
-          boxShadow: isCatena
-            ? `0 0 14px ${displayData.color}, 0 0 28px ${displayData.color}55`
-            : isActive ? `0 0 8px ${displayData.color}99` : "none",
-          transition:"all 0.15s",
-        }} />
-        {(isActive || isCatena) && (
-          <div style={{
-            position:"absolute",
-            left:"50%",
-            bottom:"calc(100% + 7px)",
-            transform:"translateX(-50%)",
-            whiteSpace:"nowrap",
-            background:"rgba(2,6,12,0.96)",
-            border:`1px solid ${displayData.color}55`,
-            borderRadius:4,
-            padding:"3px 8px",
-            fontSize: isCatena ? 10 : 9,
-            fontWeight:600,
-            color: displayData.color,
-            fontFamily:"'Space Grotesk',sans-serif",
-            pointerEvents:"none",
-            zIndex:30,
-            boxShadow: isCatena ? `0 0 10px ${displayData.color}33` : "none",
-          }}>
-            {isCatena ? "★ CATENA-X · Only verified footprint" : displayData.name}
-          </div>
+      <g {...dotProps(id)}>
+        {catena && <circle cx={cx} cy={cy} r={12} fill="none" stroke="#00ff88" strokeWidth="0.5" opacity="0.4" />}
+        <circle
+          cx={cx} cy={cy} r={r}
+          fill={active ? zone.color+"55" : zone.color+"33"}
+          stroke={zone.color}
+          strokeWidth={catena ? 1.5 : 1}
+          style={{ filter: catena ? `drop-shadow(0 0 6px ${zone.color})` : active ? `drop-shadow(0 0 4px ${zone.color})` : "none", transition:"all 0.15s" }}
+        />
+        {(active || catena) && (
+          <g>
+            <rect
+              x={cx - 52} y={cy - 28} width={104} height={16} rx={3}
+              fill="rgba(2,6,12,0.95)" stroke={zone.color} strokeWidth="0.5" strokeOpacity="0.5"
+            />
+            <text x={cx} y={cy - 17} textAnchor="middle" fill={zone.color} fontSize="7.5" fontWeight="600" fontFamily="Space Grotesk, sans-serif">
+              {catena ? "★ CATENA-X · Only verified footprint" : zone.name}
+            </text>
+          </g>
         )}
-      </div>
+      </g>
     );
+  };
+
+  // ── SIDE VIEW SVG ────────────────────────────────────────────────────
+  // BMW iX profile: front on right, rear on left
+  // ViewBox 0 0 500 240
+  const SideView = () => (
+    <svg viewBox="0 0 500 240" style={{width:"100%",height:"100%"}}>
+      <defs>
+        <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#6a1010"/>
+          <stop offset="60%" stopColor="#8b1a1a"/>
+          <stop offset="100%" stopColor="#3a0808"/>
+        </linearGradient>
+        <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#1a2a3a" stopOpacity="0.9"/>
+          <stop offset="100%" stopColor="#0a1520" stopOpacity="0.7"/>
+        </linearGradient>
+        <linearGradient id="wheelGrad" cx="50%" cy="50%" r="50%" fx="35%" fy="35%" gradientUnits="objectBoundingBox" id="wheelG">
+          <stop offset="0%" stopColor="#2a2a2a"/>
+          <stop offset="100%" stopColor="#0a0a0a"/>
+        </linearGradient>
+      </defs>
+
+      {/* ── Body shell outline ── */}
+      {/* Main body: tall SUV, flat roofline sloping at rear */}
+      <path d={`
+        M 55 175
+        L 55 155 C 55 148 58 143 64 138
+        C 72 131 80 128 88 127
+        L 110 122
+        C 118 108 130 96 148 90
+        L 200 82
+        C 220 78 250 76 270 76
+        L 330 76
+        C 360 76 375 78 385 82
+        C 400 86 408 92 412 98
+        L 435 98
+        C 443 98 448 102 450 108
+        L 452 125
+        C 454 130 454 135 452 140
+        L 450 145
+        L 450 175
+        Z
+      `} fill="url(#bodyGrad)" stroke="#1a0a0a" strokeWidth="1.5"/>
+
+      {/* Lower body sill / rocker */}
+      <path d={`M 85 175 L 85 170 L 420 170 L 420 175 Z`} fill="#1a0808" stroke="none"/>
+
+      {/* Windshield — raked, large */}
+      <path d={`
+        M 148 90 L 200 82 L 270 76 L 270 98 L 200 108 L 162 112 Z
+      `} fill="url(#glassGrad)" stroke="#0a1520" strokeWidth="1"/>
+
+      {/* Rear window — small, steeply raked */}
+      <path d={`
+        M 330 76 L 385 82 L 395 95 L 375 98 L 330 98 Z
+      `} fill="url(#glassGrad)" stroke="#0a1520" strokeWidth="1"/>
+
+      {/* Panoramic roof — dark glass panel between pillars */}
+      <path d={`M 270 76 L 330 76 L 330 98 L 270 98 Z`} fill="#0d1a24" stroke="#1a2a3a" strokeWidth="0.8"/>
+      {/* CFRP roof panel overlay — mesh pattern texture */}
+      <path d={`M 278 78 L 322 78 L 322 97 L 278 97 Z`} fill="none" stroke="#1a1a2a" strokeWidth="0.4"/>
+      <line x1="285" y1="78" x2="285" y2="97" stroke="#151525" strokeWidth="0.5"/>
+      <line x1="293" y1="78" x2="293" y2="97" stroke="#151525" strokeWidth="0.5"/>
+      <line x1="301" y1="78" x2="301" y2="97" stroke="#151525" strokeWidth="0.5"/>
+      <line x1="309" y1="78" x2="309" y2="97" stroke="#151525" strokeWidth="0.5"/>
+      <line x1="317" y1="78" x2="317" y2="97" stroke="#151525" strokeWidth="0.5"/>
+
+      {/* Door handles — flush, horizontal bars */}
+      <rect x="195" y="133" width="28" height="5" rx="2.5" fill="#3a1010" stroke="#5a2020" strokeWidth="0.5"/>
+      <rect x="290" y="133" width="28" height="5" rx="2.5" fill="#3a1010" stroke="#5a2020" strokeWidth="0.5"/>
+
+      {/* Belt line chrome strip */}
+      <path d={`M 148 130 L 410 126`} fill="none" stroke="#c8a060" strokeWidth="1.2" opacity="0.6"/>
+
+      {/* A-pillar */}
+      <path d={`M 148 90 L 162 112 L 200 108 L 200 82 Z`} fill="#5a0e0e" stroke="none"/>
+      {/* B-pillar */}
+      <path d={`M 270 98 L 270 76 L 274 76 L 274 98 Z`} fill="#3a0808" stroke="none"/>
+      {/* C-pillar */}
+      <path d={`M 330 76 L 330 98 L 338 98 L 340 82 Z`} fill="#4a0c0c" stroke="none"/>
+      {/* D-pillar/rear */}
+      <path d={`M 385 82 L 395 95 L 415 110 L 412 98 Z`} fill="#3a0808" stroke="none"/>
+
+      {/* Headlights — slim horizontal LED strip left/right of grille on right side */}
+      <path d={`M 430 102 L 453 103 L 453 110 L 430 110 Z`} fill="#aaccff" stroke="#6688cc" strokeWidth="0.5" opacity="0.8"/>
+
+      {/* Kidney grille area — front right */}
+      <path d={`
+        M 448 112 C 448 110 450 108 452 110
+        L 456 118 L 456 138 L 452 142 C 450 144 448 142 448 140 Z
+      `} fill="#0a0a0a" stroke="#1a1a1a" strokeWidth="1"/>
+
+      {/* Taillights — left rear, horizontal LED */}
+      <rect x="52" y="128" width="8" height="24" rx="2" fill="#cc2200" stroke="#881100" strokeWidth="0.5" opacity="0.9"/>
+
+      {/* Front wheel arch */}
+      <path d={`
+        M 395 175 C 395 152 408 138 422 138 C 436 138 450 152 450 175 Z
+      `} fill="#0d0d0d" stroke="#1a1a1a" strokeWidth="1"/>
+      {/* Front wheel */}
+      <circle cx="422" cy="175" r="28" fill="#111" stroke="#1a1a1a" strokeWidth="1.5"/>
+      <circle cx="422" cy="175" r="22" fill="none" stroke="#2a2a2a" strokeWidth="1"/>
+      <circle cx="422" cy="175" r="8" fill="#1a1a1a" stroke="#3a3a3a" strokeWidth="1"/>
+      {/* Spoke pattern front wheel */}
+      {[0,36,72,108,144,180,216,252,288,324].map((a,i) => (
+        <line key={i} x1={422+8*Math.cos(a*Math.PI/180)} y1={175+8*Math.sin(a*Math.PI/180)}
+          x2={422+22*Math.cos(a*Math.PI/180)} y2={175+22*Math.sin(a*Math.PI/180)}
+          stroke="#2a2a2a" strokeWidth="1.5"/>
+      ))}
+      {/* BMW roundel on front wheel */}
+      <circle cx="422" cy="175" r="5" fill="none" stroke="#aaaaaa" strokeWidth="0.8"/>
+
+      {/* Rear wheel arch */}
+      <path d={`
+        M 55 175 C 55 152 68 138 82 138 C 96 138 110 152 110 175 Z
+      `} fill="#0d0d0d" stroke="#1a1a1a" strokeWidth="1"/>
+      {/* Rear wheel */}
+      <circle cx="82" cy="175" r="28" fill="#111" stroke="#1a1a1a" strokeWidth="1.5"/>
+      <circle cx="82" cy="175" r="22" fill="none" stroke="#2a2a2a" strokeWidth="1"/>
+      <circle cx="82" cy="175" r="8" fill="#1a1a1a" stroke="#3a3a3a" strokeWidth="1"/>
+      {[0,36,72,108,144,180,216,252,288,324].map((a,i) => (
+        <line key={i} x1={82+8*Math.cos(a*Math.PI/180)} y1={175+8*Math.sin(a*Math.PI/180)}
+          x2={82+22*Math.cos(a*Math.PI/180)} y2={175+22*Math.sin(a*Math.PI/180)}
+          stroke="#2a2a2a" strokeWidth="1.5"/>
+      ))}
+      <circle cx="82" cy="175" r="5" fill="none" stroke="#aaaaaa" strokeWidth="0.8"/>
+
+      {/* Ground line */}
+      <line x1="30" y1="203" x2="480" y2="203" stroke="#1a2a1a" strokeWidth="0.5" strokeDasharray="2,4"/>
+
+      {/* Underfloor / battery slab */}
+      <rect x="112" y="172" width="280" height="6" rx="1" fill="#0a0f1a" stroke="#0f1a2a" strokeWidth="0.5"/>
+
+      {/* ── DOTS ── */}
+      {/* Side view: front is RIGHT, rear is LEFT */}
+      <Dot id="body"          cx={250} cy={138} />
+      <Dot id="glazing"       cx={235} cy={92}  />
+      <Dot id="cfrp_roof"     cx={300} cy={82}  />
+      <Dot id="interior"      cx={240} cy={102} />
+      <Dot id="front_motor"   cx={435} cy={155} />
+      <Dot id="rear_motor"    cx={68}  cy={155} />
+      <Dot id="wheels"        cx={422} cy={175} />
+      <Dot id="brakes"        cx={410} cy={165} />
+      <Dot id="suspension"    cx={420} cy={148} />
+      <Dot id="battery"       cx={252} cy={178} />
+      <Dot id="polymers_misc" cx={250} cy={165} />
+      <Dot id="electronics"   cx={445} cy={118} />
+    </svg>
+  );
+
+  // ── FRONT VIEW SVG ───────────────────────────────────────────────────
+  // ViewBox 0 0 400 340
+  const FrontView = () => (
+    <svg viewBox="0 0 400 340" style={{width:"100%",height:"100%"}}>
+      <defs>
+        <linearGradient id="fBodyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7a1212"/>
+          <stop offset="100%" stopColor="#3a0808"/>
+        </linearGradient>
+      </defs>
+
+      {/* Outer body — wide SUV stance */}
+      <path d={`
+        M 60 280
+        L 60 220 C 60 210 65 205 72 202
+        L 85 198
+        C 88 185 96 172 108 166
+        L 130 158
+        C 140 148 155 142 175 140
+        L 200 138
+        L 225 140
+        C 245 142 260 148 270 158
+        L 292 166
+        C 304 172 312 185 315 198
+        L 328 202
+        C 335 205 340 210 340 220
+        L 340 280 Z
+      `} fill="url(#fBodyGrad)" stroke="#1a0808" strokeWidth="1.5"/>
+
+      {/* Hood — center crease */}
+      <path d={`M 120 158 L 200 138 L 280 158 L 260 165 L 200 152 L 140 165 Z`} fill="#6a1010" stroke="#3a0808" strokeWidth="0.5"/>
+      <line x1="200" y1="138" x2="200" y2="165" stroke="#3a0808" strokeWidth="1" opacity="0.5"/>
+
+      {/* Windshield */}
+      <path d={`M 135 160 L 175 140 L 225 140 L 265 160 L 255 178 L 145 178 Z`} fill="#1a2a3a" stroke="#0a1520" strokeWidth="1" opacity="0.85"/>
+
+      {/* Roof strip */}
+      <path d={`M 145 178 L 255 178 L 252 188 L 148 188 Z`} fill="#0d1520" stroke="#1a2530" strokeWidth="0.5"/>
+
+      {/* CFRP roof visible as dark panel top */}
+      <path d={`M 148 188 L 252 188 L 250 195 L 150 195 Z`} fill="#0a1018" stroke="#151525" strokeWidth="0.5"/>
+
+      {/* Headlight clusters — wide horizontal, left and right */}
+      {/* Left headlight */}
+      <path d={`M 75 182 L 118 178 L 120 192 L 78 195 Z`} fill="#0a1020" stroke="#4466aa" strokeWidth="1"/>
+      <path d={`M 80 184 L 115 180 L 116 188 L 82 190 Z`} fill="#aaccff" stroke="none" opacity="0.6"/>
+      {/* Right headlight */}
+      <path d={`M 282 178 L 325 182 L 322 195 L 280 192 Z`} fill="#0a1020" stroke="#4466aa" strokeWidth="1"/>
+      <path d={`M 284 180 L 318 184 L 318 190 L 284 188 Z`} fill="#aaccff" stroke="none" opacity="0.6"/>
+
+      {/* Kidney grille — large twin oval, center */}
+      {/* Left kidney */}
+      <ellipse cx="168" cy="222" rx="38" ry="42" fill="#080808" stroke="#1a1a1a" strokeWidth="1.5"/>
+      {/* Right kidney */}
+      <ellipse cx="232" cy="222" rx="38" ry="42" fill="#080808" stroke="#1a1a1a" strokeWidth="1.5"/>
+      {/* Center bridge */}
+      <rect x="196" y="188" width="8" height="18" fill="#6a1010" stroke="none"/>
+      {/* Grille mesh lines */}
+      {[-32,-22,-12,-2,8,18,28].map((dy,i)=>(
+        <line key={i} x1="132" y1={222+dy} x2="268" y2={222+dy} stroke="#1a1a1a" strokeWidth="0.8"/>
+      ))}
+      {[145,158,170,182,194,206,218,230,242,254].map((dx,i)=>(
+        <line key={i} x1={dx} y1="182" x2={dx} y2="262" stroke="#1a1a1a" strokeWidth="0.8"/>
+      ))}
+      {/* BMW roundel center top of grille */}
+      <circle cx="200" cy="180" r="10" fill="#0a0a14" stroke="#888" strokeWidth="1"/>
+      <circle cx="200" cy="180" r="8" fill="none" stroke="#666" strokeWidth="0.5"/>
+      <path d="M200 172 L200 180 L192 180 Z" fill="#4488cc" opacity="0.8"/>
+      <path d="M200 180 L200 188 L208 180 Z" fill="#4488cc" opacity="0.8"/>
+      <path d="M192 180 L200 180 L200 188 Z" fill="#eee" opacity="0.8"/>
+      <path d="M200 172 L208 180 L200 180 Z" fill="#eee" opacity="0.8"/>
+
+      {/* Front bumper lower */}
+      <path d={`M 65 262 L 335 262 L 330 280 L 70 280 Z`} fill="#3a0808" stroke="#2a0606" strokeWidth="1"/>
+      {/* Air intake left */}
+      <path d={`M 72 252 L 120 248 L 122 262 L 72 262 Z`} fill="#0a0a0a" stroke="#1a1a1a" strokeWidth="0.8"/>
+      {/* Air intake right */}
+      <path d={`M 278 248 L 328 252 L 328 262 L 278 262 Z`} fill="#0a0a0a" stroke="#1a1a1a" strokeWidth="0.8"/>
+
+      {/* Side mirrors */}
+      <path d={`M 58 198 L 70 196 L 72 206 L 60 208 Z`} fill="#5a1010" stroke="#3a0808" strokeWidth="0.5"/>
+      <path d={`M 330 196 L 342 198 L 340 208 L 328 206 Z`} fill="#5a1010" stroke="#3a0808" strokeWidth="0.5"/>
+
+      {/* Front wheels visible at bottom corners */}
+      <ellipse cx="102" cy="290" rx="34" ry="14" fill="#111" stroke="#222" strokeWidth="1"/>
+      <ellipse cx="298" cy="290" rx="34" ry="14" fill="#111" stroke="#222" strokeWidth="1"/>
+      {/* Wheel faces */}
+      <circle cx="102" cy="282" r="22" fill="#111" stroke="#1a1a1a" strokeWidth="1"/>
+      <circle cx="298" cy="282" r="22" fill="#111" stroke="#1a1a1a" strokeWidth="1"/>
+      {[0,45,90,135,180,225,270,315].map((a,i)=>(
+        <line key={i} x1={102+7*Math.cos(a*Math.PI/180)} y1={282+7*Math.sin(a*Math.PI/180)}
+          x2={102+20*Math.cos(a*Math.PI/180)} y2={282+20*Math.sin(a*Math.PI/180)}
+          stroke="#2a2a2a" strokeWidth="1.2"/>
+      ))}
+      {[0,45,90,135,180,225,270,315].map((a,i)=>(
+        <line key={i} x1={298+7*Math.cos(a*Math.PI/180)} y1={282+7*Math.sin(a*Math.PI/180)}
+          x2={298+20*Math.cos(a*Math.PI/180)} y2={282+20*Math.sin(a*Math.PI/180)}
+          stroke="#2a2a2a" strokeWidth="1.2"/>
+      ))}
+
+      {/* ── DOTS ── */}
+      <Dot id="kidney_grille" cx={200} cy={222} />
+      <Dot id="front_motor"   cx={200} cy={268} />
+      <Dot id="battery"       cx={200} cy={285} />
+      <Dot id="electronics"   cx={96}  cy={186} />
+      <Dot id="glazing"       cx={200} cy={162} />
+      <Dot id="cfrp_roof"     cx={200} cy={192} />
+      <Dot id="body"          cx={85}  cy={235} />
+      <Dot id="wheels"        cx={102} cy={282} />
+      <Dot id="brakes"        cx={102} cy={275} />
+      <Dot id="suspension"    cx={88}  cy={268} />
+      <Dot id="polymers_misc" cx={200} cy={272} />
+      <Dot id="thermal"       cx={94}  cy={255} />
+    </svg>
+  );
+
+  // ── BACK VIEW SVG ────────────────────────────────────────────────────
+  const BackView = () => (
+    <svg viewBox="0 0 400 340" style={{width:"100%",height:"100%"}}>
+      <defs>
+        <linearGradient id="bBodyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7a1212"/>
+          <stop offset="100%" stopColor="#3a0808"/>
+        </linearGradient>
+      </defs>
+
+      {/* Body */}
+      <path d={`
+        M 62 280 L 62 225
+        C 62 215 67 208 75 204
+        L 90 200
+        C 95 188 104 178 118 172
+        L 145 164 C 162 156 178 152 200 150
+        L 222 152 C 238 156 255 164 272 172
+        L 282 178 C 296 184 305 194 310 204
+        L 325 208
+        C 332 212 338 218 338 228 L 338 280 Z
+      `} fill="url(#bBodyGrad)" stroke="#1a0808" strokeWidth="1.5"/>
+
+      {/* Rear glass */}
+      <path d={`M 140 166 L 200 150 L 260 166 L 252 190 L 148 190 Z`} fill="#1a2a3a" stroke="#0a1520" strokeWidth="1" opacity="0.85"/>
+
+      {/* Roof spoiler / CFRP top strip */}
+      <path d={`M 148 190 L 252 190 L 250 200 L 150 200 Z`} fill="#0a0f18" stroke="#151525" strokeWidth="0.5"/>
+
+      {/* Full-width taillight bar — signature iX feature */}
+      <path d={`M 72 210 L 328 210 L 328 226 L 72 226 Z`} fill="#1a0000" stroke="#2a0000" strokeWidth="0.5"/>
+      {/* Taillight glow segments */}
+      <path d={`M 74 212 L 170 212 L 170 224 L 74 224 Z`} fill="#cc1100" stroke="none" opacity="0.85"/>
+      <path d={`M 230 212 L 326 212 L 326 224 L 230 224 Z`} fill="#cc1100" stroke="none" opacity="0.85"/>
+      {/* Center dark section */}
+      <path d={`M 170 212 L 230 212 L 230 224 L 170 224 Z`} fill="#0d0000" stroke="#1a0000" strokeWidth="0.5"/>
+      {/* BMW roundel */}
+      <circle cx="200" cy="218" r="12" fill="#0a0a14" stroke="#888" strokeWidth="1"/>
+      <path d="M200 207 L200 218 L188 218 Z" fill="#4488cc" opacity="0.8"/>
+      <path d="M200 218 L200 229 L212 218 Z" fill="#4488cc" opacity="0.8"/>
+      <path d="M188 218 L200 218 L200 229 Z" fill="#eee" opacity="0.8"/>
+      <path d="M200 207 L212 218 L200 218 Z" fill="#eee" opacity="0.8"/>
+
+      {/* Trunk lid */}
+      <path d={`M 135 192 L 265 192 L 262 212 L 138 212 Z`} fill="#5a1010" stroke="#3a0808" strokeWidth="0.5"/>
+
+      {/* Rear bumper */}
+      <path d={`M 68 250 L 332 250 L 328 280 L 72 280 Z`} fill="#3a0808" stroke="#2a0606" strokeWidth="1"/>
+      {/* Rear diffuser area */}
+      <path d={`M 100 262 L 300 262 L 298 278 L 102 278 Z`} fill="#0a0a0a" stroke="#1a1a1a" strokeWidth="0.8"/>
+      {/* Rear reflectors */}
+      <rect x="76" y="264" width="20" height="8" rx="2" fill="#cc4400" opacity="0.7"/>
+      <rect x="304" y="264" width="20" height="8" rx="2" fill="#cc4400" opacity="0.7"/>
+
+      {/* Body side panels */}
+      <path d={`M 68 226 L 78 226 L 78 252 L 68 252 Z`} fill="#501010" stroke="none"/>
+      <path d={`M 322 226 L 332 226 L 332 252 L 322 252 Z`} fill="#501010" stroke="none"/>
+
+      {/* Rear wheels */}
+      <ellipse cx="108" cy="292" rx="34" ry="14" fill="#111" stroke="#222" strokeWidth="1"/>
+      <ellipse cx="292" cy="292" rx="34" ry="14" fill="#111" stroke="#222" strokeWidth="1"/>
+      <circle cx="108" cy="283" r="22" fill="#111" stroke="#1a1a1a" strokeWidth="1"/>
+      <circle cx="292" cy="283" r="22" fill="#111" stroke="#1a1a1a" strokeWidth="1"/>
+      {[0,45,90,135,180,225,270,315].map((a,i)=>(
+        <line key={i} x1={108+7*Math.cos(a*Math.PI/180)} y1={283+7*Math.sin(a*Math.PI/180)}
+          x2={108+20*Math.cos(a*Math.PI/180)} y2={283+20*Math.sin(a*Math.PI/180)}
+          stroke="#2a2a2a" strokeWidth="1.2"/>
+      ))}
+      {[0,45,90,135,180,225,270,315].map((a,i)=>(
+        <line key={i} x1={292+7*Math.cos(a*Math.PI/180)} y1={283+7*Math.sin(a*Math.PI/180)}
+          x2={292+20*Math.cos(a*Math.PI/180)} y2={283+20*Math.sin(a*Math.PI/180)}
+          stroke="#2a2a2a" strokeWidth="1.2"/>
+      ))}
+
+      {/* ── DOTS ── */}
+      <Dot id="rear_motor"    cx={200} cy={265} />
+      <Dot id="battery"       cx={200} cy={285} />
+      <Dot id="glazing"       cx={200} cy={170} />
+      <Dot id="cfrp_roof"     cx={200} cy={196} />
+      <Dot id="body"          cx={310} cy={238} />
+      <Dot id="polymers_misc" cx={200} cy={270} />
+      <Dot id="wheels"        cx={108} cy={283} />
+      <Dot id="brakes"        cx={110} cy={275} />
+      <Dot id="suspension"    cx={90}  cy={268} />
+      <Dot id="electronics"   cx={100} cy={218} />
+    </svg>
+  );
+
+  // ── TOP VIEW SVG ─────────────────────────────────────────────────────
+  // Car oriented vertically: front at TOP, rear at BOTTOM
+  // ViewBox 0 0 300 480
+  const TopView = () => (
+    <svg viewBox="0 0 300 480" style={{width:"100%",height:"100%"}}>
+      <defs>
+        <linearGradient id="tBodyGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#5a1010"/>
+          <stop offset="50%" stopColor="#8b1a1a"/>
+          <stop offset="100%" stopColor="#5a1010"/>
+        </linearGradient>
+      </defs>
+
+      {/* Main body outline — pill shape, wider in middle */}
+      <path d={`
+        M 150 35
+        C 175 35 192 42 200 55
+        L 215 80
+        C 225 95 228 110 228 130
+        L 228 340
+        C 228 360 225 375 215 390
+        L 200 410
+        C 192 423 175 430 150 430
+        C 125 430 108 423 100 410
+        L 85 390
+        C 75 375 72 360 72 340
+        L 72 130
+        C 72 110 75 95 85 80
+        L 100 55
+        C 108 42 125 35 150 35 Z
+      `} fill="url(#tBodyGrad)" stroke="#1a0808" strokeWidth="1.5"/>
+
+      {/* Hood — front section */}
+      <path d={`
+        M 150 35 C 172 35 188 42 196 52 L 210 75 L 200 80 L 150 82 L 100 80 L 90 75 L 104 52 C 112 42 128 35 150 35 Z
+      `} fill="#6a1010" stroke="#3a0808" strokeWidth="0.8"/>
+      {/* Hood crease lines */}
+      <line x1="150" y1="38" x2="150" y2="80" stroke="#3a0808" strokeWidth="0.8" opacity="0.6"/>
+      <path d={`M 150 50 C 160 52 168 58 172 66`} fill="none" stroke="#3a0808" strokeWidth="0.6" opacity="0.4"/>
+      <path d={`M 150 50 C 140 52 132 58 128 66`} fill="none" stroke="#3a0808" strokeWidth="0.6" opacity="0.4"/>
+
+      {/* Windshield from top */}
+      <path d={`M 108 82 L 192 82 L 200 102 L 100 102 Z`} fill="#1a2a3a" stroke="#0a1520" strokeWidth="0.8" opacity="0.85"/>
+
+      {/* Panoramic glass roof — large center section */}
+      <path d={`M 100 102 L 200 102 L 200 260 L 100 260 Z`} fill="#0d1820" stroke="#1a2530" strokeWidth="0.8"/>
+
+      {/* CFRP panel — right portion of roof (as seen in top photo) */}
+      <path d={`M 152 160 L 198 160 L 198 255 L 152 255 Z`} fill="#0a0f18" stroke="#151520" strokeWidth="0.5"/>
+      {/* CFRP mesh lines */}
+      {[168,176,184,192].map((x,i)=>(
+        <line key={i} x1={x} y1="160" x2={x} y2="255" stroke="#121218" strokeWidth="0.6"/>
+      ))}
+      {[175,190,205,220,235,250].map((y,i)=>(
+        <line key={i} x1="152" y1={y} x2="198" y2={y} stroke="#121218" strokeWidth="0.6"/>
+      ))}
+
+      {/* Rear window from top */}
+      <path d={`M 104 260 L 196 260 L 192 285 L 108 285 Z`} fill="#1a2530" stroke="#0a1520" strokeWidth="0.8" opacity="0.8"/>
+
+      {/* Trunk/rear from top */}
+      <path d={`M 108 285 L 192 285 L 196 340 L 104 340 Z`} fill="#5a1010" stroke="#3a0808" strokeWidth="0.8"/>
+
+      {/* Body side flanks */}
+      <path d={`M 72 130 L 86 130 L 86 340 L 72 340 Z`} fill="#501010" stroke="none"/>
+      <path d={`M 214 130 L 228 130 L 228 340 L 214 340 Z`} fill="#501010" stroke="none"/>
+
+      {/* Door handles top view — flush rectangles */}
+      <rect x="72" y="200" width="14" height="4" rx="2" fill="#3a1010" stroke="#5a2020" strokeWidth="0.5"/>
+      <rect x="214" y="200" width="14" height="4" rx="2" fill="#3a1010" stroke="#5a2020" strokeWidth="0.5"/>
+      <rect x="72" y="240" width="14" height="4" rx="2" fill="#3a1010" stroke="#5a2020" strokeWidth="0.5"/>
+      <rect x="214" y="240" width="14" height="4" rx="2" fill="#3a1010" stroke="#5a2020" strokeWidth="0.5"/>
+
+      {/* Front-left wheel */}
+      <ellipse cx="72" cy="130" rx="16" ry="28" fill="#111" stroke="#1a1a1a" strokeWidth="1.2"/>
+      <ellipse cx="72" cy="130" rx="10" ry="20" fill="none" stroke="#2a2a2a" strokeWidth="0.8"/>
+      {/* Front-right wheel */}
+      <ellipse cx="228" cy="130" rx="16" ry="28" fill="#111" stroke="#1a1a1a" strokeWidth="1.2"/>
+      <ellipse cx="228" cy="130" rx="10" ry="20" fill="none" stroke="#2a2a2a" strokeWidth="0.8"/>
+      {/* Rear-left wheel */}
+      <ellipse cx="72" cy="350" rx="16" ry="28" fill="#111" stroke="#1a1a1a" strokeWidth="1.2"/>
+      <ellipse cx="72" cy="350" rx="10" ry="20" fill="none" stroke="#2a2a2a" strokeWidth="0.8"/>
+      {/* Rear-right wheel */}
+      <ellipse cx="228" cy="350" rx="16" ry="28" fill="#111" stroke="#1a1a1a" strokeWidth="1.2"/>
+      <ellipse cx="228" cy="350" rx="10" ry="20" fill="none" stroke="#2a2a2a" strokeWidth="0.8"/>
+
+      {/* Underfloor battery slab visible from top as center strip */}
+      <rect x="98" y="108" width="104" height="258" rx="4" fill="none" stroke="#0f1a2a" strokeWidth="0.5" strokeDasharray="3,3"/>
+
+      {/* ── DOTS ── */}
+      <Dot id="cfrp_roof"     cx={172} cy={210} />
+      <Dot id="glazing"       cx={126} cy={180} />
+      <Dot id="interior"      cx={126} cy={220} />
+      <Dot id="body"          cx={80}  cy={220} />
+      <Dot id="battery"       cx={150} cy={240} />
+      <Dot id="front_motor"   cx={150} cy={110} />
+      <Dot id="rear_motor"    cx={150} cy={365} />
+      <Dot id="wheels"        cx={72}  cy={130} />
+      <Dot id="suspension"    cx={72}  cy={118} />
+    </svg>
+  );
+
+  const renderView = () => {
+    switch(view) {
+      case "side":  return <SideView />;
+      case "front": return <FrontView />;
+      case "back":  return <BackView />;
+      case "top":   return <TopView />;
+      default:      return <SideView />;
+    }
   };
 
   return (
@@ -542,22 +878,14 @@ function CarView({ onZoneClick, selectedZone }) {
         ))}
       </div>
 
-      {/* Photo + dots — objectFit:cover so photo fills container */}
-      <div style={{ position:"relative", flex:1, overflow:"hidden", background:"#000" }}>
-        <img
-          key={view}
-          src={VIEWS.find(v=>v.id===view).src}
-          alt={`BMW iX ${view}`}
-          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
-        />
-        <div style={{ position:"absolute", inset:0 }}>
-          {Object.entries(currentDots).map(([dotId, pos]) => renderDot(dotId, pos))}
-        </div>
+      {/* SVG view */}
+      <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:"8px 16px" }}>
+        {renderView()}
       </div>
 
       {!selectedZone && (
         <div style={{
-          textAlign:"center", padding:"5px 0",
+          textAlign:"center", padding:"4px 0",
           fontSize:10, color:"#2a3a4a",
           fontFamily:"'Space Grotesk',sans-serif", flexShrink:0,
         }}>
