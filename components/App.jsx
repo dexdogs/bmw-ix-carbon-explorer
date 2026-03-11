@@ -413,7 +413,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="xMidYMid slice"
-          style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"all", zIndex:2, overflow:"visible" }}
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"all", zIndex:2, overflow:"visible" }} onClick={(e)=>{ if(e.target.tagName==="svg"||e.target.tagName==="image")onZoneClick(null); }}
         >
           {zones.map(z => {
             const isActive = hovered === z.id;
@@ -459,7 +459,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
                   cx={z.cx} cy={z.cy}
                   r={0.75}
                   fill={z.color}
-                  opacity={isFaded ? 0.1 : isActive ? 1 : 0.72}
+                  opacity={isFaded ? 0.2 : isActive ? 1 : 0.72}
                   stroke={isActive ? "rgba(255,255,255,0.55)" : "none"}
                   strokeWidth={0.45}
                 />
