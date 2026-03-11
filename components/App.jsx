@@ -183,10 +183,10 @@ function DataPanel({ zone, onClose }) {
 
 
 function FeedbackButton() {
-  const [open, setOpen] = React.useState(false);
-  const [type, setType] = React.useState("general");
-  const [name, setName] = React.useState("");
-  const [message, setMessage] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState("general");
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSend = () => {
     const subject = encodeURIComponent(`[BMW iX Carbon Explorer] ${type.charAt(0).toUpperCase()+type.slice(1)} Feedback`);
