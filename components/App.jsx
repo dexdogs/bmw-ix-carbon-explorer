@@ -341,96 +341,51 @@ function QualityLegend() {
 
 function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
   const [view, setView] = useState("front_angle");
-  const [clicking, setClicking] = useState(false);
-  const [clickResult, setClickResult] = useState(null);
-  const [clickPos, setClickPos] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const imgRef = useRef(null);
+  const [activeZone, setActiveZone] = useState(null);
 
   const VIEWS = [
-    { id:"front_angle", label:"Front", src:"/images/bmw-ix-front-angle.jpg",
-      desc:"Front three-quarter angle. Front-left of car visible. Kidney grille prominent front-left. Hood, windshield, A-pillar, front wheel, headlights, front bumper, side mirror all visible. Right side body and rear wheel also visible." },
-    { id:"back_angle",  label:"Rear",  src:"/images/bmw-ix-back-angle.jpg",
-      desc:"Rear three-quarter angle. Rear-left of car visible. Full-width taillight bar prominent. Rear bumper, diffuser, rear glass, CFRP roof panel, rear wheel well, rear quarter panel visible. Right side body and front wheel also visible." },
+    { id:"front_angle", label:"Front", src:"/images/bmw-ix-front-angle.jpg" },
+    { id:"back_angle",  label:"Rear",  src:"/images/bmw-ix-back-angle.jpg"  },
   ];
 
-  const handlePhotoClick = async (e) => {
-    if (loading) return;
-    const rect = imgRef.current.getBoundingClientRect();
-    const xPct = Math.round(((e.clientX - rect.left) / rect.width)  * 100);
-    const yPct = Math.round(((e.clientY - rect.top)  / rect.height) * 100);
-    setClickPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    setLoading(true);
-    setClickResult(null);
-
-    const currentView = VIEWS.find(v => v.id === view);
-
-    try {
-      const pcrResp = await fetch("/pcr_data.json");
-      const pcrData = await pcrResp.json();
-
-      const prompt = `You are an expert in automotive carbon accounting for the BMW iX xDrive45.
-
-The user clicked on a photo of the BMW iX at position x=${xPct}%, y=${yPct}% (percentage of image width/height, origin top-left).
-
-Photo description: ${currentView.desc}
-
-Based on this click position, identify what part or component of the car the user most likely clicked on. Consider the 3D geometry of the car from this angle.
-
-Here is the full PCR (Product Category Rules) dataset for this vehicle — 80 entries:
-${JSON.stringify(pcrData)}
-
-Return ONLY a JSON object with this exact structure, no markdown, no explanation:
-{
-  "clicked_part": "short name of what was clicked (e.g. Kidney Grille, Front Wheel, Hood, Battery Pack)",
-  "confidence": "high|medium|low",
-  "reasoning": "one sentence explaining why",
-  "matching_pcrs": [
-    {
-      "id": "PCR-XXX",
-      "name": "...",
-      "category": "...",
-      "zone": "...",
-      "components": "...",
-      "pcf_kg": 000,
-      "quality": "...",
-      "weight_kg": 000,
-      "relevance": "one sentence why this PCR matches"
-    }
-  ]
-}
-
-Return 2-5 most relevant PCRs. matching_pcrs must be actual entries from the dataset above.`;
-
-      const resp = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }],
-        }),
-      });
-
-      const data = await resp.json();
-      const text = data.content?.[0]?.text || "";
-      const clean = text.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(clean);
-      setClickResult(parsed);
-    } catch(err) {
-      console.error("Parse error:", err, "Raw text:", text); setClickResult({ error: "Could not identify part. Try clicking again. Error: " + err.message });
-    }
-    setLoading(false);
+  // cx/cy = % of image. Carefully mapped to each photo.
+  // Cards defined per view: label shown in card, arrow tip at cx/cy on photo
+  const VIEW_ZONES = {
+    front_angle: [
+      { id:"kidney_grille", cx:28,  cy:58, label:"Kidney Grille", sub:"★ Catena-X Verified · 8kg CO₂e",  color:"#00ff88" },
+      { id:"electronics",   cx:21,  cy:52, label:"Headlights & Electronics", sub:"1.0t CO₂e",            color:"#e67e22" },
+      { id:"body",          cx:44,  cy:44, label:"Hood & Body Structure",    sub:"5.7t CO₂e",             color:"#95a5a6" },
+      { id:"glazing",       cx:55,  cy:38, label:"Windshield & Glazing",     sub:"97kg CO₂e",             color:"#bdc3c7" },
+      { id:"cfrp_roof",     cx:64,  cy:29, label:"CFRP Roof Panel",          sub:"375kg CO₂e",            color:"#8e44ad" },
+      { id:"interior",      cx:62,  cy:42, label:"Interior & Trim",          sub:"749kg CO₂e",            color:"#1abc9c" },
+      { id:"front_motor",   cx:26,  cy:72, label:"Front Motor + Inverter",   sub:"742kg CO₂e",            color:"#3498db" },
+      { id:"wheels",        cx:30,  cy:82, label:"Wheels & Tires",           sub:"596kg CO₂e",            color:"#2ecc71" },
+      { id:"brakes",        cx:23,  cy:78, label:"Brake System",             sub:"191kg CO₂e",            color:"#7f8c8d" },
+      { id:"battery",       cx:50,  cy:76, label:"HV Battery Pack",          sub:"4.4t CO₂e",             color:"#e74c3c" },
+      { id:"suspension",    cx:34,  cy:76, label:"Suspension & Steering",    sub:"209kg CO₂e",            color:"#2980b9" },
+      { id:"polymers_misc", cx:72,  cy:54, label:"Body Panels & Polymers",   sub:"689kg CO₂e",            color:"#9b59b6" },
+    ],
+    back_angle: [
+      { id:"cfrp_roof",     cx:53,  cy:27, label:"CFRP Roof Panel",          sub:"375kg CO₂e",            color:"#8e44ad" },
+      { id:"glazing",       cx:36,  cy:36, label:"Rear Glass & Glazing",     sub:"97kg CO₂e",             color:"#bdc3c7" },
+      { id:"interior",      cx:50,  cy:41, label:"Interior & Trim",          sub:"749kg CO₂e",            color:"#1abc9c" },
+      { id:"body",          cx:30,  cy:50, label:"Body Structure",           sub:"5.7t CO₂e",             color:"#95a5a6" },
+      { id:"electronics",   cx:22,  cy:56, label:"Taillights & Electronics", sub:"1.0t CO₂e",             color:"#e67e22" },
+      { id:"rear_motor",    cx:20,  cy:70, label:"Rear Motor + Inverter",    sub:"743kg CO₂e",            color:"#3498db" },
+      { id:"wheels",        cx:22,  cy:78, label:"Rear Wheels & Tires",      sub:"596kg CO₂e",            color:"#2ecc71" },
+      { id:"suspension",    cx:24,  cy:74, label:"Suspension & Steering",    sub:"209kg CO₂e",            color:"#2980b9" },
+      { id:"battery",       cx:42,  cy:78, label:"HV Battery Pack",          sub:"4.4t CO₂e",             color:"#e74c3c" },
+      { id:"charging",      cx:63,  cy:57, label:"Charging System",          sub:"24kg CO₂e",             color:"#f39c12" },
+      { id:"polymers_misc", cx:72,  cy:66, label:"Side Panels & Polymers",   sub:"689kg CO₂e",            color:"#9b59b6" },
+      { id:"brakes",        cx:72,  cy:73, label:"Brake System",             sub:"191kg CO₂e",            color:"#7f8c8d" },
+    ],
   };
 
-  const qualityColor = (q) => {
-    if (!q) return "#445566";
-    if (q.includes("Catena")) return "#00ff88";
-    if (q.includes("Supplier")) return "#4a9eff";
-    if (q.includes("Industry")) return "#f39c12";
-    if (q.includes("Generic")) return "#e67e22";
-    return "#e74c3c";
-  };
+  const zones = VIEW_ZONES[view] || [];
+  // Sort by cy so leaders go top to bottom — minimise crossing
+  const sorted = [...zones].sort((a,b) => a.cy - b.cy);
+
+  const active = activeZone || externalHover || selectedZone;
 
   return (
     <div style={{
@@ -440,7 +395,7 @@ Return 2-5 most relevant PCRs. matching_pcrs must be actual entries from the dat
       {/* View switcher */}
       <div style={{ display:"flex", gap:8, padding:"6px 12px", justifyContent:"center", flexShrink:0 }}>
         {VIEWS.map(v => (
-          <button key={v.id} onClick={()=>{ setView(v.id); setClickResult(null); setClickPos(null); }} style={{
+          <button key={v.id} onClick={()=>{ setView(v.id); setActiveZone(null); }} style={{
             padding:"4px 28px", borderRadius:6, cursor:"pointer",
             fontFamily:"'Space Grotesk',sans-serif", fontSize:12, fontWeight:600,
             border:`1px solid ${view===v.id?"#4a9eff":"#1a2a3c"}`,
@@ -451,169 +406,112 @@ Return 2-5 most relevant PCRs. matching_pcrs must be actual entries from the dat
         ))}
       </div>
 
-      {/* Photo + result row */}
-      <div style={{ flex:1, display:"flex", minHeight:0, gap:0 }}>
+      {/* Main row: photo (left) + cards (right) */}
+      <div style={{ flex:1, display:"flex", minHeight:0 }}>
 
-        {/* Photo */}
-        <div style={{ flex: clickResult ? "0 0 55%" : "1", position:"relative", cursor: loading ? "wait" : "crosshair", transition:"flex 0.3s" }}
-          onClick={handlePhotoClick}
-        >
+        {/* PHOTO — takes ~65% width */}
+        <div style={{ flex:"0 0 65%", position:"relative" }}>
           <img
-            ref={imgRef}
             key={view}
             src={VIEWS.find(v=>v.id===view).src}
             alt={"BMW iX " + view}
             style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
           />
 
-          {/* Click marker */}
-          {clickPos && (
-            <div style={{
-              position:"absolute",
-              left: clickPos.x - 8, top: clickPos.y - 8,
-              width:16, height:16, borderRadius:"50%",
-              border:"2px solid white",
-              background: loading ? "rgba(74,158,255,0.4)" : "rgba(255,255,255,0.2)",
-              pointerEvents:"none",
-              transition:"background 0.2s",
-            }}/>
-          )}
-
-          {/* Loading spinner overlay */}
-          {loading && (
-            <div style={{
-              position:"absolute", inset:0,
-              background:"rgba(0,0,0,0.35)",
-              display:"flex", alignItems:"center", justifyContent:"center",
-              pointerEvents:"none",
-            }}>
-              <div style={{
-                width:32, height:32, borderRadius:"50%",
-                border:"2px solid #1a2a3c",
-                borderTop:"2px solid #4a9eff",
-                animation:"spin 0.8s linear infinite",
-              }}/>
-            </div>
-          )}
-
-          {/* Instruction hint */}
-          {!clickResult && !loading && (
-            <div style={{
-              position:"absolute", bottom:12, left:0, right:0,
-              textAlign:"center", pointerEvents:"none",
-            }}>
-              <div style={{
-                display:"inline-block",
-                background:"rgba(2,5,12,0.8)",
-                border:"1px solid #1a2a3c",
-                borderRadius:6, padding:"5px 14px",
-                fontSize:10, color:"#445566",
-                fontFamily:"'Space Grotesk',sans-serif",
-              }}>
-                Click anywhere on the car to identify the part &amp; its carbon data
-              </div>
-            </div>
-          )}
+          {/* SVG: dot targets only — no labels on photo */}
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="xMidYMid slice"
+            style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", zIndex:2 }}
+          >
+            {sorted.map(z => {
+              const isActive = active === z.id;
+              const isFaded  = active && active !== z.id;
+              return (
+                <g key={z.id}>
+                  {isActive && (
+                    <circle cx={z.cx} cy={z.cy} r={5}
+                      fill={z.color} fillOpacity={0.15}
+                      stroke={z.color} strokeWidth={0.5}
+                    />
+                  )}
+                  <circle
+                    cx={z.cx} cy={z.cy} r={isActive ? 2.2 : 1.3}
+                    fill={z.color}
+                    opacity={isFaded ? 0.12 : isActive ? 1 : 0.65}
+                    stroke={isActive ? "rgba(255,255,255,0.5)" : "none"}
+                    strokeWidth={0.4}
+                  />
+                </g>
+              );
+            })}
+          </svg>
         </div>
 
-        {/* Result panel */}
-        {clickResult && !clickResult.error && (
-          <div style={{
-            flex:"0 0 45%", overflowY:"auto",
-            background:"#020508", borderLeft:"1px solid #0d1a2a",
-            padding:"14px 12px",
-          }}>
-            {/* Part identified */}
-            <div style={{ marginBottom:12 }}>
-              <div style={{ fontSize:9, color:"#2a4a6a", fontFamily:"'Space Grotesk',sans-serif", textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:4 }}>
-                Part Identified
-              </div>
-              <div style={{ fontSize:16, fontWeight:700, color:"#e0eeff", fontFamily:"'Space Grotesk',sans-serif" }}>
-                {clickResult.clicked_part}
-              </div>
-              <div style={{ fontSize:9, color:"#334455", fontFamily:"'Space Grotesk',sans-serif", marginTop:3 }}>
-                {clickResult.reasoning}
-              </div>
-              <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:6 }}>
+        {/* CARDS COLUMN — 35% width, scrollable */}
+        <div style={{
+          flex:"0 0 35%",
+          overflowY:"auto",
+          background:"#020508",
+          borderLeft:"1px solid #0a1520",
+          display:"flex",
+          flexDirection:"column",
+          justifyContent:"center",
+          padding:"6px 8px",
+          gap:4,
+        }}>
+          {sorted.map(z => {
+            const isActive = active === z.id;
+            const isFaded  = active && active !== z.id;
+            return (
+              <div
+                key={z.id}
+                onClick={() => { onZoneClick(z.id); setActiveZone(z.id); }}
+                onMouseEnter={() => setActiveZone(z.id)}
+                onMouseLeave={() => setActiveZone(null)}
+                style={{
+                  display:"flex", alignItems:"center", gap:6,
+                  cursor:"pointer",
+                  padding:"5px 8px",
+                  borderRadius:4,
+                  border:`1px solid ${isActive ? z.color : z.color+"33"}`,
+                  background: isActive ? z.color+"18" : "transparent",
+                  opacity: isFaded ? 0.2 : 1,
+                  transition:"all 0.15s",
+                  flexShrink:0,
+                }}
+              >
+                {/* Color dot */}
                 <div style={{
-                  fontSize:8, fontWeight:600, padding:"2px 7px", borderRadius:3,
-                  background: clickResult.confidence==="high"?"rgba(0,255,136,0.1)":clickResult.confidence==="medium"?"rgba(74,158,255,0.1)":"rgba(231,76,60,0.1)",
-                  color: clickResult.confidence==="high"?"#00ff88":clickResult.confidence==="medium"?"#4a9eff":"#e74c3c",
-                  border:`1px solid ${clickResult.confidence==="high"?"#00ff8833":clickResult.confidence==="medium"?"#4a9eff33":"#e74c3c33"}`,
-                  fontFamily:"'Space Grotesk',sans-serif", textTransform:"uppercase", letterSpacing:"0.08em",
-                }}>
-                  {clickResult.confidence} confidence
-                </div>
-                <div style={{ fontSize:8, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif" }}>
-                  {clickResult.matching_pcrs?.length} PCRs matched
-                </div>
-              </div>
-            </div>
-
-            <div style={{ borderTop:"1px solid #0d1a2a", marginBottom:10 }}/>
-
-            {/* Matched PCRs */}
-            <div style={{ fontSize:9, color:"#2a4a6a", fontFamily:"'Space Grotesk',sans-serif", textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:8 }}>
-              Matched Product Category Rules
-            </div>
-            {(clickResult.matching_pcrs || []).map((pcr, i) => (
-              <div key={i} style={{
-                marginBottom:8, padding:"8px 10px",
-                background:"rgba(4,10,20,0.8)",
-                border:"1px solid #0d1a2a",
-                borderRadius:5,
-              }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:3 }}>
-                  <div style={{ fontSize:8, color:"#2a4a6a", fontFamily:"'Space Grotesk',sans-serif", fontWeight:600 }}>{pcr.id}</div>
+                  width:6, height:6, borderRadius:"50%",
+                  background: z.color,
+                  flexShrink:0,
+                  boxShadow: isActive ? `0 0 6px ${z.color}` : "none",
+                }}/>
+                <div style={{ minWidth:0 }}>
                   <div style={{
-                    fontSize:7, padding:"1px 5px", borderRadius:2, fontWeight:600,
-                    color: qualityColor(pcr.quality),
-                    background: qualityColor(pcr.quality) + "18",
-                    border:`1px solid ${qualityColor(pcr.quality)}33`,
+                    fontSize:10, fontWeight:700, color: isActive ? z.color : "#8899aa",
                     fontFamily:"'Space Grotesk',sans-serif",
-                  }}>{pcr.quality}</div>
+                    whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
+                    transition:"color 0.15s",
+                  }}>{z.label}</div>
+                  <div style={{
+                    fontSize:8, color:"#2a3a4a",
+                    fontFamily:"'Space Grotesk',sans-serif",
+                  }}>{z.sub}</div>
                 </div>
-                <div style={{ fontSize:11, fontWeight:700, color:"#c0d8f0", fontFamily:"'Space Grotesk',sans-serif", marginBottom:2 }}>{pcr.name}</div>
-                <div style={{ fontSize:8, color:"#334455", fontFamily:"'Space Grotesk',sans-serif", marginBottom:5 }}>{pcr.category}</div>
-                <div style={{ display:"flex", gap:10, marginBottom:5 }}>
-                  <div>
-                    <div style={{ fontSize:7, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif" }}>PCF</div>
-                    <div style={{ fontSize:12, fontWeight:700, color:"#e0eeff", fontFamily:"'Space Grotesk',sans-serif" }}>
-                      {pcr.pcf_kg >= 1000 ? (pcr.pcf_kg/1000).toFixed(1)+"t" : pcr.pcf_kg+"kg"}
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize:7, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif" }}>Weight</div>
-                    <div style={{ fontSize:12, fontWeight:700, color:"#e0eeff", fontFamily:"'Space Grotesk',sans-serif" }}>{pcr.weight_kg}kg</div>
-                  </div>
-                  <div style={{ flex:1 }}>
-                    <div style={{ fontSize:7, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif" }}>Zone</div>
-                    <div style={{ fontSize:9, color:"#4a6a8a", fontFamily:"'Space Grotesk',sans-serif" }}>{pcr.zone}</div>
-                  </div>
-                </div>
-                <div style={{ fontSize:8, color:"#2a4a6a", fontFamily:"'Space Grotesk',sans-serif", fontStyle:"italic" }}>{pcr.relevance}</div>
               </div>
-            ))}
-
-            <button onClick={()=>{ setClickResult(null); setClickPos(null); }} style={{
-              width:"100%", marginTop:4, padding:"6px",
-              background:"transparent", border:"1px solid #0d1a2a",
-              borderRadius:4, color:"#334455", fontSize:9,
-              fontFamily:"'Space Grotesk',sans-serif", cursor:"pointer",
-            }}>
-              ← Click another part
-            </button>
-          </div>
-        )}
-
-        {clickResult?.error && (
-          <div style={{ flex:"0 0 45%", display:"flex", alignItems:"center", justifyContent:"center", color:"#e74c3c", fontSize:11, fontFamily:"'Space Grotesk',sans-serif", padding:20, textAlign:"center" }}>
-            {clickResult.error}
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <div style={{
+        textAlign:"center", padding:"3px 0", flexShrink:0,
+        fontSize:9, color:"#1a2a3a", fontFamily:"'Space Grotesk',sans-serif",
+      }}>
+        Hover or click a zone · left panel also works
+      </div>
     </div>
   );
 }
