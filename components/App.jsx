@@ -518,24 +518,12 @@ export default function App() {
       <QualityLegend />
       <div style={{ position:"absolute", top:82, right:selectedZone?412:18, zIndex:30 }}>
         <button onClick={()=>setShowInfo(v=>!v)} style={{ width:36, height:36, borderRadius:8, border:`1px solid ${showInfo?"#00ff88":"#1a2a3c"}`, background:showInfo?"rgba(0,255,136,0.1)":"rgba(8,12,21,0.9)", color:showInfo?"#00ff88":"#556677", cursor:"pointer", fontSize:16 }} title="Dataset info & glossary">ⓘ</button>
-      <button onClick={()=>{
-        const headers = ["Zone","PCRs","Parts","Weight (kg)","CO2e (kg)","% of Total","Data Quality"];
-        const rows = ZONES.map(z => [
-          z.name,
-          z.pcr_count,
-          z.parts,
-          z.weight_kg,
-          z.co2e_kg,
-          z.pct_of_total,
-          z.data_quality
-        ]);
-        const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
-        const blob = new Blob([csv], {type:"text/csv"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = "bmw-ix-carbon-data.csv"; a.click();
-        URL.revokeObjectURL(url);
-      }} style={{ width:36, height:36, borderRadius:8, border:"1px solid #1a2a3c", background:"rgba(8,12,21,0.9)", color:"#556677", cursor:"pointer", fontSize:13, fontWeight:700 }} title="Download dataset as CSV">↓</button>
+      
+        href="/BMW_iX_PCR_PCF_Dataset_Phase1.xlsx"
+        download="BMW_iX_PCR_PCF_Dataset_Phase1.xlsx"
+        style={{ width:36, height:36, borderRadius:8, border:"1px solid #1a2a3c", background:"rgba(8,12,21,0.9)", color:"#556677", cursor:"pointer", fontSize:9, fontWeight:700, display:"flex", alignItems:"center", justifyContent:"center", textDecoration:"none", fontFamily:"'Space Grotesk',sans-serif", letterSpacing:"0.02em" }}
+        title="Export dataset"
+      >CSV↓</a>
       </div>
       {showInfo&&<InfoPanel selectedZone={selectedZone} />}
     </div>
