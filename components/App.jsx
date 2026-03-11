@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
 const F = {
   head: "'BPdots', 'Courier New', monospace",
@@ -345,7 +345,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
   const [clickResult, setClickResult] = useState(null);
   const [clickPos, setClickPos] = useState(null);
   const [loading, setLoading] = useState(false);
-  const imgRef = React.useRef(null);
+  const imgRef = useRef(null);
 
   const VIEWS = [
     { id:"front_angle", label:"Front", src:"/images/bmw-ix-front-angle.jpg",
