@@ -418,7 +418,7 @@ Return 2-5 most relevant PCRs. matching_pcrs must be actual entries from the dat
       const parsed = JSON.parse(clean);
       setClickResult(parsed);
     } catch(err) {
-      setClickResult({ error: "Could not identify part. Try clicking again." });
+      console.error("Parse error:", err, "Raw text:", text); setClickResult({ error: "Could not identify part. Try clicking again. Error: " + err.message });
     }
     setLoading(false);
   };
