@@ -366,16 +366,16 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
     back_angle: [
       { id:"cfrp_roof",     cx:53,  cy:33,   label:"CFRP Roof Panel",         sub:"5 parts · 1 PCRs",                     color:"#8e44ad" },
       { id:"glazing",       cx:36,  cy:41,   label:"Rear Glass & Glazing",    sub:"11 parts · 3 PCRs",                      color:"#bdc3c7" },
-      { id:"interior",      cx:50,  cy:41,   label:"Interior & Trim",         sub:"400 parts · 8 PCRs",                     color:"#1abc9c" },
-      { id:"body",          cx:30,  cy:50,   label:"Body Structure",          sub:"2,000 parts · 15 PCRs",                      color:"#95a5a6" },
+      { id:"interior",      cx:53,  cy:41,   label:"Interior & Trim",         sub:"400 parts · 8 PCRs",                     color:"#1abc9c" },
+      { id:"body",          cx:27,  cy:50,   label:"Body Structure",          sub:"2,000 parts · 15 PCRs",                      color:"#95a5a6" },
       { id:"electronics",   cx:32,  cy:48,   label:"Taillights & Electronics",sub:"1,800 parts · 7 PCRs",                      color:"#e67e22" },
       { id:"rear_motor",    cx:20,  cy:60,   label:"Rear Motor + Inverter",   sub:"20 parts · 3 PCRs",                     color:"#3498db" },
       { id:"wheels",        cx:52,  cy:73,   label:"Rear Wheels & Tires",     sub:"12 parts · 3 PCRs",                     color:"#2ecc71" },
-      { id:"suspension",    cx:24,  cy:69,   label:"Suspension & Steering",   sub:"220 parts · 6 PCRs",                     color:"#2980b9" },
-      { id:"battery",       cx:77,  cy:63,   label:"HV Battery Pack",         sub:"60 parts · 9 PCRs",                      color:"#e74c3c" },
+      { id:"suspension",    cx:24,  cy:68,   label:"Suspension & Steering",   sub:"220 parts · 6 PCRs",                     color:"#2980b9" },
+      { id:"battery",       cx:77,  cy:64,   label:"HV Battery Pack",         sub:"60 parts · 9 PCRs",                      color:"#e74c3c" },
       { id:"charging",      cx:54,  cy:47,   label:"Charging System",         sub:"5 parts · 2 PCRs",                      color:"#f39c12" },
       { id:"polymers_misc", cx:72,  cy:56,   label:"Side Panels & Polymers",  sub:"600 parts · 9 PCRs",                     color:"#9b59b6" },
-      { id:"brakes",        cx:57,  cy:68,   label:"Brake System",            sub:"60 parts · 4 PCRs",                     color:"#7f8c8d" },
+      { id:"brakes",        cx:57,  cy:66,   label:"Brake System",            sub:"60 parts · 4 PCRs",                     color:"#7f8c8d" },
     ],
   };
 
