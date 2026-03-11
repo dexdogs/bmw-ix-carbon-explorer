@@ -358,11 +358,11 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
       { id:"glazing",       cx:45,  cy:38, label:"Windshield & Glazing",     sub:"97kg CO₂e",             color:"#bdc3c7" },
       { id:"cfrp_roof",     cx:64,  cy:31.5, label:"CFRP Roof Panel",          sub:"375kg CO₂e",            color:"#8e44ad" },
       { id:"interior",      cx:52,  cy:39, label:"Interior & Trim",          sub:"749kg CO₂e",            color:"#1abc9c" },
-      { id:"front_motor",   cx:29,  cy:72, label:"Front Motor + Inverter",   sub:"742kg CO₂e",            color:"#3498db" },
+      { id:"front_motor",   cx:29,  cy:62, label:"Front Motor + Inverter",   sub:"742kg CO₂e",            color:"#3498db" },
       { id:"wheels",        cx:55,  cy:73, label:"Wheels & Tires",           sub:"596kg CO₂e",            color:"#2ecc71" },
       { id:"brakes",        cx:57,  cy:63, label:"Brake System",             sub:"191kg CO₂e",            color:"#7f8c8d" },
       { id:"battery",       cx:75,  cy:64, label:"HV Battery Pack",          sub:"4.4t CO₂e",             color:"#e74c3c" },
-      { id:"suspension",    cx:24,  cy:76, label:"Suspension & Steering",    sub:"209kg CO₂e",            color:"#2980b9" },
+      { id:"suspension",    cx:24,  cy:71, label:"Suspension & Steering",    sub:"209kg CO₂e",            color:"#2980b9" },
       { id:"polymers_misc", cx:72,  cy:54, label:"Body Panels & Polymers",   sub:"689kg CO₂e",            color:"#9b59b6" },
     ],
     back_angle: [
