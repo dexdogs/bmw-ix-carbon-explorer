@@ -542,6 +542,7 @@ function InfoPanel({ selectedZone }) {
 
 export default function App() {
   const [selectedZone,setSelectedZone]=useState(null);
+  const [hoveredZone,setHoveredZone]=useState(null);
     const [showInfo,setShowInfo]=useState(false);
   const handleZoneClick=useCallback((id)=>{setSelectedZone(prev=>prev===id?null:id);},[]);
   return(
