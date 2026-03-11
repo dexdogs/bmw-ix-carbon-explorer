@@ -258,213 +258,147 @@ function CarView({ onZoneClick, selectedZone }) {
     { id:"top",   label:"Top",   src:"/images/bmw-ix-top.jpg"   },
   ];
 
-  // All photos are square (1080x1080) displayed with objectFit:contain in a ~16:9 container
-  // So the actual image renders centered with black bars on left/right
-  // Positions are % of the IMG ELEMENT dimensions (which fill the container height)
-  // Car occupies roughly x:25%-75%, y:30%-88% of the square image
-  // Each view mapped only to what is physically visible in that photo
+  // Photos are square 1080x1080, displayed with objectFit:cover filling container
+  // All dots are % of the rendered container dimensions
+  // Only zones physically visible in each photo are included
 
   const DOT_POSITIONS = {
     front: {
-      // Front photo: car centered, facing viewer
-      // Grille: large black kidney shape, center of car, ~y:54-65%
-      kidney_grille: {x:50, y:59},
-      // Front motor: behind/below grille
-      front_motor:   {x:50, y:67},
-      // Hood: red panel above grille
-      hood:          {x:50, y:47},
+      // Kidney grille: large black panel dead center
+      kidney_grille: {x:50, y:57},
+      // Front motor: behind grille, low
+      front_motor:   {x:50, y:65},
+      // Hood: red panel above grille, center
+      hood:          {x:50, y:46},
       // Windshield: dark glass upper center
-      glazing:       {x:50, y:39},
-      // CFRP roof: just visible at very top of car
-      cfrp_roof:     {x:50, y:33},
-      // Left headlight cluster
-      electronics:   {x:35, y:55},
-      // Right headlight cluster
-      headlights:    {x:65, y:55},
+      glazing:       {x:50, y:38},
+      // CFRP roof: top strip of car
+      cfrp_roof:     {x:50, y:32},
+      // Left headlight — maps to electronics zone
+      electronics:   {x:34, y:54},
       // Front bumper lower center
-      polymers_misc: {x:50, y:72},
-      // Body left side panel
-      body:          {x:32, y:60},
-      // Left front wheel
-      wheels:        {x:30, y:80},
-      // Left front brake inside wheel
-      brakes:        {x:30, y:78},
-      // Left front suspension lower arch
-      suspension:    {x:29, y:75},
-      // Battery: underfloor, low center
-      battery:       {x:50, y:78},
+      polymers_misc: {x:50, y:71},
+      // Body left panel
+      body:          {x:31, y:61},
+      // Left front wheel bottom left
+      wheels:        {x:27, y:79},
+      // Left front brake
+      brakes:        {x:27, y:76},
+      // Left front suspension
+      suspension:    {x:27, y:73},
+      // Battery underfloor center
+      battery:       {x:50, y:76},
     },
+    // RIGHT side photo: front of car is on LEFT side of image
     right: {
-      // Right side photo: front of car on LEFT side of image, rear on RIGHT
-      // Car body spans roughly x:8%-92%, y:35%-78%
-      // Doors/body center
-      body:          {x:50, y:57},
-      // Side windows (glass strip)
-      glazing:       {x:47, y:44},
-      // CFRP roof strip top of car
-      cfrp_roof:     {x:45, y:37},
-      // Interior visible through glass
-      interior:      {x:46, y:50},
-      // Front wheel (LEFT side of photo)
-      wheels:        {x:20, y:72},
-      // Front brake
-      brakes:        {x:20, y:70},
-      // Front suspension
-      suspension:    {x:19, y:67},
-      // Rear wheel (RIGHT side of photo)
-      rear_suspension:{x:80, y:67},
-      // Rear motor (right/rear of car)
-      rear_motor:    {x:82, y:62},
-      // Front motor (left/front of car)
-      front_motor:   {x:16, y:64},
-      // Taillights far right
-      taillights:    {x:90, y:57},
-      // Headlights far left
-      headlights:    {x:10, y:57},
-      // Side sill / polymers
-      polymers_misc: {x:50, y:68},
-      // Battery underfloor
-      battery:       {x:50, y:73},
+      body:           {x:50, y:56},
+      glazing:        {x:47, y:43},
+      cfrp_roof:      {x:45, y:36},
+      interior:       {x:46, y:49},
+      wheels:         {x:22, y:71},
+      brakes:         {x:22, y:68},
+      suspension:     {x:21, y:65},
+      rear_motor:     {x:80, y:61},
+      front_motor:    {x:18, y:63},
+      polymers_misc:  {x:50, y:67},
+      battery:        {x:50, y:72},
+      electronics:    {x:11, y:56},
     },
+    // LEFT side photo: front of car is on RIGHT side of image
     left: {
-      // Left side photo: front of car on RIGHT, rear on LEFT
-      // Mirror of right view
-      body:          {x:50, y:57},
-      glazing:       {x:52, y:43},
-      cfrp_roof:     {x:55, y:36},
-      interior:      {x:53, y:49},
-      // Front wheel RIGHT side of photo
-      wheels:        {x:78, y:72},
-      brakes:        {x:78, y:70},
-      suspension:    {x:79, y:67},
-      // Rear wheel LEFT side of photo
-      rear_suspension:{x:20, y:67},
-      // Rear motor left/rear
-      rear_motor:    {x:17, y:62},
-      // Front motor right/front
-      front_motor:   {x:83, y:64},
-      // Taillights far left
-      taillights:    {x:9,  y:57},
-      // Headlights far right
-      headlights:    {x:90, y:57},
-      polymers_misc: {x:50, y:68},
-      battery:       {x:50, y:73},
-      // Charging port: left side rear quarter panel (unique to left view)
-      charging:      {x:25, y:60},
+      body:           {x:50, y:56},
+      glazing:        {x:52, y:43},
+      cfrp_roof:      {x:54, y:36},
+      interior:       {x:53, y:49},
+      wheels:         {x:78, y:71},
+      brakes:         {x:78, y:68},
+      suspension:     {x:79, y:65},
+      rear_motor:     {x:20, y:61},
+      front_motor:    {x:82, y:63},
+      polymers_misc:  {x:50, y:67},
+      battery:        {x:50, y:72},
+      electronics:    {x:89, y:56},
+      charging:       {x:23, y:59},
     },
     back: {
-      // Back photo: car centered facing away
-      // Car spans roughly x:22%-78%, y:28%-85%
-      // Full-width taillight bar
-      taillights:    {x:50, y:54},
-      // Rear glass upper center
-      glazing:       {x:50, y:42},
-      // CFRP roof top strip
-      cfrp_roof:     {x:50, y:33},
-      // Trunk panel below rear glass
-      trunk:         {x:50, y:59},
-      // Rear bumper lower
-      polymers_misc: {x:50, y:71},
-      // Body right panel
-      body:          {x:67, y:60},
-      // Rear motor behind bumper center
-      rear_motor:    {x:50, y:67},
-      // Battery underfloor bottom
-      battery:       {x:50, y:78},
-      // Left rear wheel
-      wheels:        {x:30, y:80},
-      // Left rear brake
-      brakes:        {x:30, y:78},
-      // Left rear suspension
-      suspension:    {x:29, y:75},
+      taillights:     {x:50, y:53},
+      glazing:        {x:50, y:41},
+      cfrp_roof:      {x:50, y:32},
+      trunk:          {x:50, y:58},
+      polymers_misc:  {x:50, y:70},
+      body:           {x:66, y:59},
+      rear_motor:     {x:50, y:66},
+      battery:        {x:50, y:76},
+      wheels:         {x:29, y:79},
+      brakes:         {x:29, y:76},
+      suspension:     {x:28, y:73},
     },
     top: {
-      // Top photo: car tilted slightly, front at TOP-LEFT, rear at BOTTOM-RIGHT
-      // Car body roughly x:20%-80%, y:22%-75%
-      // Hood at top-left of car
-      hood:          {x:30, y:28},
-      // Windshield (transparent strip near front)
-      glazing:       {x:38, y:38},
-      // CFRP dark panel - the large mesh panel center-right
-      cfrp_roof:     {x:62, y:52},
-      // Panoramic glass left of CFRP panel
-      interior:      {x:44, y:47},
-      // Body left flank
-      body:          {x:28, y:50},
-      // Body right flank
-      trunk:         {x:72, y:58},
-      // Front-left wheel (top-left corner)
-      wheels:        {x:25, y:70},
-      // Rear-right wheel (bottom-right corner)
-      rear_suspension:{x:74, y:70},
-      // Battery: center underfloor (not visible but label at center)
-      battery:       {x:50, y:55},
+      // Top photo: front of car at TOP-LEFT, rear at BOTTOM-RIGHT, car tilted ~15deg
+      hood:           {x:30, y:27},
+      glazing:        {x:37, y:37},
+      cfrp_roof:      {x:60, y:51},
+      interior:       {x:44, y:46},
+      body:           {x:27, y:49},
+      trunk:          {x:70, y:58},
+      wheels:         {x:24, y:68},
+      battery:        {x:50, y:53},
     },
   };
 
-  // Map App.jsx zone IDs to our dot keys
-  const ZONE_ID_MAP = {
-    kidney_grille:  "kidney_grille",
-    front_motor:    "front_motor",
-    rear_motor:     "rear_motor",
-    body:           "body",
-    cfrp_roof:      "cfrp_roof",
-    electronics:    "electronics",
-    interior:       "interior",
-    thermal:        "thermal",
-    suspension:     "suspension",
-    brakes:         "brakes",
-    glazing:        "glazing",
-    safety:         "safety",
-    wheels:         "wheels",
-    charging:       "charging",
-    polymers_misc:  "polymers_misc",
-    battery:        "battery",
+  // Extra dot definitions not in main ZONES array
+  const EXTRA_DOTS = {
+    hood:       { name:"Hood / Front Closures",  color:"#88aacc" },
+    taillights: { name:"Taillights",             color:"#ff6644" },
+    trunk:      { name:"Trunk / Rear Closure",   color:"#aa88cc" },
+    charging:   { name:"Charging Port",          color:"#44ccaa" },
   };
 
-  // Extra dots not in ZONES but visible in photos
-  const EXTRA_DOTS = {
-    hood:           { id:"hood",            name:"Hood / Front Closures",   color:"#88aacc" },
-    headlights:     { id:"headlights",      name:"Headlights",              color:"#aaccff" },
-    taillights:     { id:"taillights",      name:"Taillights",              color:"#ff6644" },
-    trunk:          { id:"trunk",           name:"Trunk / Rear Closure",    color:"#aa88cc" },
-    rear_suspension:{ id:"rear_suspension", name:"Rear Suspension",         color:"#cc9944" },
-    charging:       { id:"charging",        name:"Charging Port",           color:"#44ccaa" },
+  // Map extra dot IDs to nearest clickable ZONE id
+  const EXTRA_TO_ZONE = {
+    hood:       "body",
+    taillights: "rear_motor",
+    trunk:      "body",
+    charging:   "charging",
   };
 
   const currentDots = DOT_POSITIONS[view] || {};
 
-  const renderDot = (zoneId, pos) => {
-    // Find zone data from ZONES array or EXTRA_DOTS
-    const zone = ZONES.find(z => z.id === zoneId) || EXTRA_DOTS[zoneId];
-    if (!zone) return null;
-    const isActive = selectedZone === zoneId || hoveredZone === zoneId;
-    const isCatena = zoneId === "kidney_grille";
+  const renderDot = (dotId, pos) => {
+    const zone = ZONES.find(z => z.id === dotId);
+    const extra = EXTRA_DOTS[dotId];
+    const displayData = zone || extra;
+    if (!displayData) return null;
+
+    // Clickable zone id: direct if in ZONES, mapped if extra
+    const clickId = zone ? dotId : EXTRA_TO_ZONE[dotId];
+    const isActive = selectedZone === clickId || hoveredZone === dotId;
+    const isCatena = dotId === "kidney_grille";
 
     return (
       <div
-        key={zoneId}
-        onClick={() => { if (ZONES.find(z => z.id === zoneId)) onZoneClick(zoneId); }}
-        onMouseEnter={() => setHoveredZone(zoneId)}
+        key={dotId}
+        onClick={() => { if (clickId) onZoneClick(clickId); }}
+        onMouseEnter={() => setHoveredZone(dotId)}
         onMouseLeave={() => setHoveredZone(null)}
         style={{
           position:"absolute",
           left:`${pos.x}%`,
           top:`${pos.y}%`,
           transform:"translate(-50%,-50%)",
-          cursor: ZONES.find(z => z.id === zoneId) ? "pointer" : "default",
+          cursor:"pointer",
           zIndex: isActive ? 20 : 10,
         }}
       >
         <div style={{
-          width: isCatena ? 14 : isActive ? 11 : 7,
-          height: isCatena ? 14 : isActive ? 11 : 7,
+          width: isCatena ? 14 : isActive ? 12 : 8,
+          height: isCatena ? 14 : isActive ? 12 : 8,
           borderRadius:"50%",
-          background: isActive ? zone.color+"55" : zone.color+"33",
-          border:`${isCatena?2:1.5}px solid ${zone.color}`,
+          background: isActive ? displayData.color+"55" : displayData.color+"33",
+          border:`${isCatena?2:1.5}px solid ${displayData.color}`,
           boxShadow: isCatena
-            ? `0 0 14px ${zone.color}, 0 0 28px ${zone.color}55`
-            : isActive ? `0 0 7px ${zone.color}99` : "none",
+            ? `0 0 14px ${displayData.color}, 0 0 28px ${displayData.color}55`
+            : isActive ? `0 0 8px ${displayData.color}99` : "none",
           transition:"all 0.15s",
         }} />
         {(isActive || isCatena) && (
@@ -475,18 +409,18 @@ function CarView({ onZoneClick, selectedZone }) {
             transform:"translateX(-50%)",
             whiteSpace:"nowrap",
             background:"rgba(2,6,12,0.96)",
-            border:`1px solid ${zone.color}55`,
+            border:`1px solid ${displayData.color}55`,
             borderRadius:4,
             padding:"3px 8px",
             fontSize: isCatena ? 10 : 9,
             fontWeight:600,
-            color: zone.color,
+            color: displayData.color,
             fontFamily:"'Space Grotesk',sans-serif",
             pointerEvents:"none",
             zIndex:30,
-            boxShadow: isCatena ? `0 0 10px ${zone.color}33` : "none",
+            boxShadow: isCatena ? `0 0 10px ${displayData.color}33` : "none",
           }}>
-            {isCatena ? "★ CATENA-X · Only verified footprint" : zone.name}
+            {isCatena ? "★ CATENA-X · Only verified footprint" : displayData.name}
           </div>
         )}
       </div>
@@ -515,17 +449,16 @@ function CarView({ onZoneClick, selectedZone }) {
         ))}
       </div>
 
-      {/* Photo + dots */}
+      {/* Photo + dots — objectFit:cover so photo fills container */}
       <div style={{ position:"relative", flex:1, overflow:"hidden", background:"#000" }}>
         <img
           key={view}
           src={VIEWS.find(v=>v.id===view).src}
           alt={`BMW iX ${view}`}
-          style={{ width:"100%", height:"100%", objectFit:"contain", display:"block" }}
+          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
         />
-        {/* Dot overlay */}
         <div style={{ position:"absolute", inset:0 }}>
-          {Object.entries(currentDots).map(([zoneId, pos]) => renderDot(zoneId, pos))}
+          {Object.entries(currentDots).map(([dotId, pos]) => renderDot(dotId, pos))}
         </div>
       </div>
 
