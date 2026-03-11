@@ -221,7 +221,7 @@ function FeedbackButton() {
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
               <div>
                 <div style={{ fontSize:14, fontWeight:700, color:"#ccd6e0" }}>Info & Feedback</div>
-                <div className="bmw-header-sub" style={{ fontSize:10, color:"#445566", marginTop:2 }}>BMW iX Carbon Data Layer · dexdogs</div>
+                <div style={{ fontSize:10, color:"#445566", marginTop:2 }}>BMW iX Carbon Data Layer · dexdogs</div>
               </div>
               <button onClick={()=>setOpen(false)} style={{ background:"none", border:"none", color:"#445566", cursor:"pointer", fontSize:18, lineHeight:1 }}>✕</button>
             </div>
@@ -407,7 +407,7 @@ function CarView({ onZoneClick, selectedZone, hoveredZone: externalHover }) {
           key={view}
           src={VIEWS.find(v=>v.id===view).src}
           alt={"BMW iX " + view}
-          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 65%", display:"block" }}
+          style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center 60%", display:"block" }}
         />
 
         <svg
