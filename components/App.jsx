@@ -214,7 +214,7 @@ function Header() {
       <div style={{ display:"flex", gap:24, alignItems:"center" }}>
         {[
           [VEHICLE_DATA.total_pcrs,"Product Category Rules (PCRs)"],
-          [`~${(VEHICLE_DATA.total_pcfs_est/1000).toFixed(0)}K`,"Product Carbon Footprints (PCFs)"],
+          [VEHICLE_DATA.total_pcfs_est.toLocaleString(),"Product Carbon Footprints (PCFs)"],
           [`${VEHICLE_DATA.supply_chain_co2e_t}t`,"CO₂ equivalent, cradle-to-gate"],
         ].map(([val,label],i)=>(
           <div key={i} style={{ textAlign:"center", maxWidth:130 }}>
