@@ -351,7 +351,6 @@ function CarView({ onZoneClick, selectedZone }) {
     { id:"top",   label:"Top",   src:"/images/bmw-ix-top.jpg"   },
   ];
 
-  // cx/cy = % of photo dimensions, where the leader line arrow points TO
   const VIEW_ZONES = {
     front: [
       { id:"kidney_grille", cx:50,  cy:57 },
@@ -422,6 +421,8 @@ function CarView({ onZoneClick, selectedZone }) {
   };
 
   const zones = VIEW_ZONES[view] || [];
+  const LABEL_W = 22;  // % of container width
+  const LABEL_X = 1;   // % from left edge
 
   return (
     <div style={{
@@ -442,116 +443,105 @@ function CarView({ onZoneClick, selectedZone }) {
         ))}
       </div>
 
-      {/* Photo area — fills remaining space, labels+leaders rendered as SVG on top */}
+      {/* Photo + overlay */}
       <div style={{ flex:1, position:"relative", overflow:"hidden" }}>
 
-        {/* Photo — fills container */}
+        {/* Photo */}
         <img
           key={view}
           src={VIEWS.find(v=>v.id===view).src}
-          alt={`BMW iX ${view}`}
+          alt={"BMW iX " + view}
           style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}
         />
 
-        {/* SVG overlay — labels left of photo + leader lines — sits above photo */}
+        {/* SVG leader lines layer — above photo */}
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="xMidYMid slice"
-          style={{
-            position:"absolute", inset:0,
-            width:"100%", height:"100%",
-            overflow:"visible",
-            pointerEvents:"none",
-          }}
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none", zIndex:2 }}
         >
           {zones.map((z, i) => {
             const zone = ZONES.find(zn => zn.id === z.id);
             if (!zone) return null;
-            const isSelected = selectedZone === z.id;
-            const isHovered  = hoveredZone  === z.id;
-            const isCatena   = z.id === "kidney_grille";
-            const active     = isSelected || isHovered;
-
-            // Stack labels down left side, evenly spaced
-            const labelY     = 8 + (i * (84 / zones.length));
-            const labelX     = -2;   // left edge of SVG (outside photo)
-            const cardW      = 28;   // label card width in SVG units
-            const cardH      = 6;
-            const cardX      = labelX - cardW; // card sits to left of photo
-            const dotX       = z.cx;
-            const dotY       = z.cy;
-
-            // Leader line: from right edge of card → dot on photo
-            const lineX1     = labelX;
-            const lineY1     = labelY + cardH / 2;
-
-            const co2Label   = zone.co2e_kg >= 1000
-              ? `${(zone.co2e_kg/1000).toFixed(1)}t`
-              : `${zone.co2e_kg}kg`;
-
+            const active = selectedZone === z.id || hoveredZone === z.id;
+            const faded  = selectedZone && selectedZone !== z.id && hoveredZone !== z.id;
+            const topPct = 4 + i * (88 / zones.length) + (44 / zones.length);
+            const lineX1 = LABEL_X + LABEL_W;
+            const lineY1 = topPct;
             return (
-              <g key={z.id} style={{ pointerEvents:"all", cursor:"pointer" }}
-                onClick={() => onZoneClick(z.id)}
-                onMouseEnter={() => setHoveredZone(z.id)}
-                onMouseLeave={() => setHoveredZone(null)}
-              >
-                {/* Leader line from label to dot */}
+              <g key={z.id}>
                 <line
                   x1={lineX1} y1={lineY1}
-                  x2={dotX}   y2={dotY}
+                  x2={z.cx}   y2={z.cy}
                   stroke={zone.color}
-                  strokeWidth={active ? 0.6 : 0.35}
-                  strokeDasharray={active ? "none" : "1.5,1"}
-                  opacity={active ? 1 : selectedZone && !isSelected ? 0.2 : 0.55}
+                  strokeWidth={active ? 0.55 : 0.3}
+                  strokeDasharray={active ? "none" : "1.5,0.8"}
+                  opacity={faded ? 0.12 : active ? 1 : 0.55}
                 />
-                {/* Arrowhead at dot end */}
                 <circle
-                  cx={dotX} cy={dotY} r={active ? 1.4 : 0.9}
+                  cx={z.cx} cy={z.cy}
+                  r={active ? 1.6 : 1.0}
                   fill={zone.color}
-                  opacity={active ? 1 : selectedZone && !isSelected ? 0.2 : 0.6}
+                  opacity={faded ? 0.12 : 0.9}
                 />
-                {/* Label card background */}
-                <rect
-                  x={cardX} y={labelY}
-                  width={cardW} height={cardH} rx={1.2}
-                  fill={active ? `${zone.color}22` : "rgba(4,8,16,0.88)"}
-                  stroke={zone.color}
-                  strokeWidth={active ? 0.6 : 0.3}
-                  strokeOpacity={active ? 1 : selectedZone && !isSelected ? 0.2 : 0.6}
-                />
-                {/* Zone name */}
-                <text
-                  x={cardX + cardW - 1.5} y={labelY + 2.8}
-                  textAnchor="end"
-                  fill={zone.color}
-                  fontSize="2.4"
-                  fontWeight={active ? "700" : "500"}
-                  fontFamily="Space Grotesk, sans-serif"
-                  opacity={active ? 1 : selectedZone && !isSelected ? 0.25 : 0.85}
-                >
-                  {isCatena ? `★ ${zone.name}` : zone.name}
-                </text>
-                {/* CO2e label */}
-                <text
-                  x={cardX + cardW - 1.5} y={labelY + 5}
-                  textAnchor="end"
-                  fill={zone.color}
-                  fontSize="1.9"
-                  fontFamily="Space Grotesk, sans-serif"
-                  opacity={active ? 0.9 : selectedZone && !isSelected ? 0.15 : 0.5}
-                >
-                  {co2Label} CO₂e
-                </text>
               </g>
             );
           })}
         </svg>
+
+        {/* HTML label cards — left strip, above photo */}
+        <div style={{ position:"absolute", inset:0, zIndex:3, pointerEvents:"none" }}>
+          {zones.map((z, i) => {
+            const zone = ZONES.find(zn => zn.id === z.id);
+            if (!zone) return null;
+            const active   = selectedZone === z.id || hoveredZone === z.id;
+            const faded    = selectedZone && selectedZone !== z.id && hoveredZone !== z.id;
+            const isCatena = z.id === "kidney_grille";
+            const co2Label = zone.co2e_kg >= 1000
+              ? (zone.co2e_kg/1000).toFixed(1) + "t CO2e"
+              : zone.co2e_kg + "kg CO2e";
+            const topPct = 4 + i * (88 / zones.length);
+            return (
+              <div
+                key={z.id}
+                onClick={() => onZoneClick(z.id)}
+                onMouseEnter={() => setHoveredZone(z.id)}
+                onMouseLeave={() => setHoveredZone(null)}
+                style={{
+                  position:"absolute",
+                  left: LABEL_X + "%",
+                  top: topPct + "%",
+                  width: LABEL_W + "%",
+                  pointerEvents:"all",
+                  cursor:"pointer",
+                  background: active ? zone.color+"22" : "rgba(2,5,10,0.85)",
+                  border:"1px solid " + (active ? zone.color : zone.color+"55"),
+                  borderRadius:4,
+                  padding:"3px 6px",
+                  opacity: faded ? 0.2 : 1,
+                  transition:"all 0.15s",
+                }}
+              >
+                <div style={{
+                  fontSize:9, fontWeight:700, color:zone.color,
+                  fontFamily:"Space Grotesk, sans-serif",
+                  whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
+                }}>
+                  {isCatena ? "★ " + zone.name : zone.name}
+                </div>
+                <div style={{ fontSize:8, color:"#445566", fontFamily:"Space Grotesk, sans-serif" }}>
+                  {co2Label}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {!selectedZone && (
         <div style={{
           textAlign:"center", padding:"4px 0", flexShrink:0,
-          fontSize:10, color:"#2a3a4a", fontFamily:"'Space Grotesk',sans-serif",
+          fontSize:10, color:"#2a3a4a", fontFamily:"Space Grotesk, sans-serif",
         }}>
           Click any label to explore carbon data
         </div>
